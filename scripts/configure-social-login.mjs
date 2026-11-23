@@ -56,7 +56,8 @@ for (const [name, idKey, secretKey] of [
 }
 
 // 로그인을 마치고 돌아올 수 있는 주소 (개발용 + 배포용)
-const allow = ["http://localhost:3000/**"];
+// 개발 서버는 3000번이 차 있으면 3001번 등으로 옮겨 가므로, 몇 개를 함께 허용한다.
+const allow = [3000, 3001, 3002, 3003].map((p) => `http://localhost:${p}/**`);
 if (siteUrl) {
   allow.push(`${siteUrl.replace(/\/$/, "")}/**`);
   payload.site_url = siteUrl.replace(/\/$/, "");
