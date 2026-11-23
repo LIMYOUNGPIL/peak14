@@ -9,6 +9,24 @@
     "language": "한국어",
     "comingSoon": "준비 중"
   },
+  "auth": {
+    "loginTitle": "로그인",
+    "signupTitle": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordHint": "8자 이상",
+    "loginButton": "로그인",
+    "signupButton": "가입하기",
+    "logout": "로그아웃",
+    "toSignup": "계정이 없나요? 가입하기",
+    "toLogin": "이미 계정이 있나요? 로그인",
+    "working": "처리 중...",
+    "invalidEmail": "올바른 이메일 주소를 입력해 주세요.",
+    "shortPassword": "비밀번호는 8자 이상이어야 합니다.",
+    "wrongCredentials": "이메일 또는 비밀번호가 맞지 않습니다.",
+    "signupFailed": "가입할 수 없습니다. 이미 가입했다면 로그인해 주세요.",
+    "generic": "문제가 생겼습니다. 잠시 뒤 다시 시도해 주세요."
+  },
   "home": {
     "noRoutes": "등록된 루트 없음",
     "routeCount": "트레킹 루트 {count}개"
