@@ -7,7 +7,10 @@
     "backToMountains": "← 14좌 목록",
     "login": "로그인",
     "language": "한국어",
-    "comingSoon": "준비 중"
+    "comingSoon": "준비 중",
+    "notFoundTitle": "페이지를 찾을 수 없습니다",
+    "notFoundBody": "주소가 잘못되었거나 없어진 페이지입니다.",
+    "toHome": "14좌 목록으로 가기"
   },
   "auth": {
     "loginTitle": "로그인",
@@ -85,7 +88,8 @@
     "safetyTitle": "안전 유의사항",
     "source": "출처",
     "asOf": "기준일",
-    "difficultySource": "난이도 근거",
+    "difficultyBasis": "근거",
+    "safetyDisclaimer": "등록된 자료를 그대로 옮긴 안내이며, 이 루트의 안전을 보증하지 않습니다. 출발 전에 공식 기관과 현지에서 최신 정보를 다시 확인하세요.",
     "unitKm": " km",
     "unitDays": "일",
     "unitPlaces": "곳"

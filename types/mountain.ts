@@ -23,6 +23,7 @@ export type Route = {
   amenities: string[] | null; // 편의시설
   difficulty: Difficulty | null; // 난이도 (루트 등록 시 근거와 함께 직접 부여)
   difficultySource: string | null; // 난이도 근거(출처). 근거가 없으면 난이도도 null
+  difficultyAsOf: string | null; // 난이도 근거의 기준일 (YYYY-MM-DD)
   safetyNotes: SafetyNote[]; // 안전 유의사항. 빈 배열이면 "정보 없음"
   source: string | null; // 출처
   asOf: string | null; // 정보 기준일 (YYYY-MM-DD)

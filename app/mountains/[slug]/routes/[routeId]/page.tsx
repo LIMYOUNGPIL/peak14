@@ -87,14 +87,23 @@ async function RouteDetail({
     ],
     [
       t("route.difficulty"),
-      <InfoValue
-        key="difficulty"
-        value={
-          route.difficulty === null
-            ? null
-            : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty)
-        }
-      />,
+      <span key="difficulty" className="flex flex-col items-end gap-0.5">
+        <InfoValue
+          value={
+            route.difficulty === null
+              ? null
+              : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty)
+          }
+        />
+        {/* 난이도에는 근거(출처와 기준일)를 함께 보여 준다. 근거가 없으면 난이도 자체가 "정보 없음"이다. */}
+        {route.difficulty !== null && (
+          <span className="text-xs font-normal text-zinc-500">
+            {t("route.difficultyBasis")}:{" "}
+            <InfoValue value={route.difficultySource} /> · {t("route.asOf")}:{" "}
+            <InfoValue value={route.difficultyAsOf} />
+          </span>
+        )}
+      </span>,
     ],
   ];
 
@@ -121,7 +130,9 @@ async function RouteDetail({
       </dl>
 
       <section className="mt-8">
-        <h2 className="mb-3 text-lg font-semibold">{t("route.safetyTitle")}</h2>
+        <h2 className="mb-2 text-lg font-semibold">{t("route.safetyTitle")}</h2>
+        {/* 안전을 보증하지 않는다는 점을 항상 알린다. (PRD 6번: 의료·안전 보증 금지) */}
+        <p className="mb-3 text-sm text-zinc-500">{t("route.safetyDisclaimer")}</p>
         {route.safetyNotes.length === 0 ? (
           <p className="text-zinc-600 dark:text-zinc-400">
             <InfoValue value={null} />
@@ -144,13 +155,6 @@ async function RouteDetail({
       <p className="mt-8 text-sm text-zinc-500">
         {t("route.source")}: <InfoValue value={route.source} /> ·{" "}
         {t("route.asOf")}: <InfoValue value={route.asOf} />
-        {route.difficulty !== null && (
-          <>
-            {" "}
-            · {t("route.difficultySource")}:{" "}
-            <InfoValue value={route.difficultySource} />
-          </>
-        )}
       </p>
     </main>
   );
