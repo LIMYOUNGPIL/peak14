@@ -4,9 +4,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
+import ReviewForm from "@/components/ReviewForm";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
 import { formatMeasure } from "@/lib/format";
+import { submitReview } from "@/lib/reviews/actions";
 import { t } from "@/lib/i18n/messages";
 
 export default function RoutePage({
@@ -152,6 +154,26 @@ async function RouteDetail({
             ))}
           </ul>
         )}
+      </section>
+
+      {/* 후기 쓰기: 로그인한 사용자만 이 화면에 들어올 수 있다. 후기 목록은 PLAN 12번에서 만든다. */}
+      <section className="mt-10">
+        <h2 className="mb-2 text-lg font-semibold">{t("review.writeTitle")}</h2>
+        <p className="mb-4 text-sm text-zinc-500">{t("review.writeHint")}</p>
+        <ReviewForm
+          action={submitReview}
+          mountainSlug={mountain.slug}
+          routeId={route.id}
+          text={{
+            rating: t("review.rating"),
+            ratingLabels: [1, 2, 3, 4, 5].map((n) => t("review.ratingLabel", { n })),
+            body: t("review.body"),
+            placeholder: t("review.bodyPlaceholder"),
+            counter: t("review.counter", { n: "{n}" }),
+            submit: t("review.submit"),
+            submitting: t("review.submitting"),
+          }}
+        />
       </section>
 
       <p className="mt-8 text-sm text-zinc-500">
