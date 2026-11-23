@@ -14,8 +14,11 @@ export type Review = {
   id: string;
   routeId: string; // 어느 루트의 후기인지
   origin: ReviewOrigin;
-  body: string; // 앱 안 후기는 본문, 외부 글은 AI 요약
-  writtenYear: number; // 작성 연도 (5년이 지나면 기본으로 숨김)
+  body: string | null; // 앱 안 후기: 작성자가 쓴 본문 (원문 그대로)
+  summaryKo: string | null; // 외부 글: AI 요약 한국어판
+  summaryEn: string | null; // 외부 글: AI 요약 영어판
+  writtenYear: number; // 작성 연도 (현재 연도 - 작성 연도 ≥ 5 이면 기본으로 숨김)
+  createdAt: string; // 저장된 시각 (같은 연도 안에서 최신 순으로 정렬할 때 쓴다)
   language: Language; // 후기 원문의 언어
   sentiment: ReviewSentiment | null; // AI 판정 (null = 판정 중)
 
