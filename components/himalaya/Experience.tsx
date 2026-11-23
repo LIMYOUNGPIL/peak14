@@ -19,7 +19,7 @@ import {
 } from "react";
 import MountainGrid from "@/components/MountainGrid";
 import { t } from "@/lib/i18n/messages";
-import type { Mountain } from "@/types/mountain";
+import type { PublicMountain } from "@/types/mountain";
 import CustomCursor from "./CustomCursor";
 import PeakInfo from "./PeakInfo";
 import PeakList from "./PeakList";
@@ -74,7 +74,7 @@ function useMediaQuery(query: string): boolean {
   );
 }
 
-export default function Experience({ mountains }: { mountains: Mountain[] }) {
+export default function Experience({ mountains }: { mountains: PublicMountain[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const labelRefs = useRef<(HTMLElement | null)[]>([]);
 

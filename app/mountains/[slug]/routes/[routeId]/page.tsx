@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import InfoValue from "@/components/InfoValue";
+import LoginRequired from "@/components/LoginRequired";
+import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
 import { t } from "@/lib/i18n/messages";
 
@@ -30,6 +32,28 @@ async function RouteDetail({
   if (!mountain) notFound();
   const route = getRoute(mountain, routeId);
   if (!route) notFound();
+
+  // 로그인하지 않았다면 세부 정보를 보내지 않고 로그인 안내만 보여 준다. (안전 유의사항은 건수만)
+  const user = await getCurrentUser();
+  if (!user) {
+    return (
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
+        <Link
+          href={`/mountains/${mountain.slug}`}
+          className="text-sm text-zinc-500 hover:underline"
+        >
+          ← {mountain.nameKo}
+        </Link>
+        <div className="mt-4">
+          <LoginRequired
+            routeName={route.name}
+            safetyCount={route.safetyNotes.length}
+            next={`/mountains/${mountain.slug}/routes/${route.id}`}
+          />
+        </div>
+      </main>
+    );
+  }
 
   // 값이 없으면 InfoValue 가 "정보 없음"으로 보여 준다.
   const rows: [string, ReactNode][] = [

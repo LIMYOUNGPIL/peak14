@@ -4,8 +4,8 @@
 // 로그인 상태는 서버가 쿠키로 확인한다. 이메일은 화면에 보여 주지 않는다. (PRD 7번: 닉네임만 표시)
 
 import Link from "next/link";
-import { connection } from "next/server";
 import { logout } from "@/lib/auth/actions";
+import { getCurrentUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/db/server";
 import { t } from "@/lib/i18n/messages";
 
@@ -13,15 +13,11 @@ const buttonClass =
   "rounded-full border border-black/15 px-3 py-1 text-sm transition-colors hover:bg-black/[.04] dark:border-white/20 dark:hover:bg-white/[.06]";
 
 export default async function AuthControls() {
-  // 로그인 확인은 현재 시각(만료 시간 비교)을 쓰므로, 미리 그리지 않고
-  // 요청이 올 때 그리도록 표시한다. (Cache Components 규칙)
-  await connection();
+  // 세부 정보를 보여 주는 화면과 같은 방식(서버에 물어 확인)으로 로그인을 확인한다.
+  // 삭제된 계정의 낡은 증명서가 남아 있어도 "로그인한 것처럼" 보이지 않게 하기 위해서다.
+  const user = await getCurrentUser();
 
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub;
-
-  if (!userId) {
+  if (!user) {
     return (
       <Link href="/login" className={buttonClass}>
         {t("auth.loginButton")}
@@ -29,10 +25,11 @@ export default async function AuthControls() {
     );
   }
 
+  const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
     .select("nickname")
-    .eq("id", userId)
+    .eq("id", user.id)
     .maybeSingle();
 
   return (

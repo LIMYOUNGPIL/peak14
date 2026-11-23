@@ -4,10 +4,10 @@
 // (Design Ref: §3.1 — 3D가 안 보이면 14좌 목록으로 전환할 수 있다.)
 
 import Link from "next/link";
-import type { Mountain } from "@/types/mountain";
+import type { PublicMountain } from "@/types/mountain";
 import { t } from "@/lib/i18n/messages";
 
-export default function MountainGrid({ mountains }: { mountains: Mountain[] }) {
+export default function MountainGrid({ mountains }: { mountains: PublicMountain[] }) {
   return (
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {mountains.map((m, i) => (
@@ -20,8 +20,8 @@ export default function MountainGrid({ mountains }: { mountains: Mountain[] }) {
             <h2 className="mt-1 text-xl font-semibold">{m.nameKo}</h2>
             <p className="text-sm text-zinc-500">{m.nameEn}</p>
             <p className="mt-3 text-sm">
-              {m.routes.length > 0
-                ? t("home.routeCount", { count: m.routes.length })
+              {m.routeCount > 0
+                ? t("home.routeCount", { count: m.routeCount })
                 : t("home.noRoutes")}
             </p>
           </Link>

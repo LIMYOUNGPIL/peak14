@@ -42,3 +42,27 @@ export type Mountain = {
   source: string | null; // 출처
   asOf: string | null; // 정보 기준일 (YYYY-MM-DD)
 };
+
+// 로그인 전에도 볼 수 있는 산 정보 (PRD 4번: 루트 목록까지 공개, 세부 정보는 로그인 후)
+// 루트의 세부 내용(안전 유의사항, 거리 등)은 일부러 담지 않는다. 화면(브라우저)으로 보내는 값이기 때문이다.
+export type PublicMountain = Pick<
+  Mountain,
+  | "slug"
+  | "nameKo"
+  | "nameEn"
+  | "elevationM"
+  | "lat"
+  | "lon"
+  | "countries"
+  | "source"
+  | "asOf"
+> & {
+  routeCount: number;
+};
+
+// 로그인 전 루트 목록에 보여 줄 수 있는 루트 정보: 이름과 안전 유의사항 "건수"만
+export type PublicRoute = {
+  id: string;
+  name: string;
+  safetyCount: number;
+};

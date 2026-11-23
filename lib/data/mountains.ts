@@ -4,6 +4,8 @@
 // 규칙(PRD 5번): 값을 모르면 추측해서 채우지 않고 null 로 둔다.
 // 루트 정보는 출처(source)와 기준일(asOf)과 함께 등록한다.
 
+// 서버 전용: 화면(브라우저) 코드가 이 파일을 직접 불러오면 빌드에서 막힌다.
+import "server-only";
 import type { Mountain, Route } from "@/types/mountain";
 
 // 산 정보의 출처 (14좌 공통)

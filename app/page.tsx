@@ -1,8 +1,9 @@
 import Experience from "@/components/himalaya/Experience";
-import { mountains } from "@/lib/data/mountains";
+import { getPublicMountains } from "@/lib/data/public";
 
 // 첫 화면: 히말라야 3D 전경. 드래그로 돌려 보고, 산을 누르면 정보가 나온다.
 // (3D를 쓸 수 없으면 14좌 목록으로 바뀐다.)
 export default function Home() {
-  return <Experience mountains={mountains} />;
+  // 화면(브라우저)으로는 로그인 전에도 되는 공개 정보만 보낸다.
+  return <Experience mountains={getPublicMountains()} />;
 }

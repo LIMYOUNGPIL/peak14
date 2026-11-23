@@ -4,10 +4,10 @@
 // 선택한 산은 하얀 점으로 표시한다.
 
 import { t } from "@/lib/i18n/messages";
-import type { Mountain } from "@/types/mountain";
+import type { PublicMountain } from "@/types/mountain";
 
 type Props = {
-  mountains: Mountain[];
+  mountains: PublicMountain[];
   selected: string | null;
   onSelect: (slug: string) => void;
 };

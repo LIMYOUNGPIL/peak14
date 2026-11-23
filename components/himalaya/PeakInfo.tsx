@@ -6,10 +6,10 @@
 import Link from "next/link";
 import InfoValue from "@/components/InfoValue";
 import { t } from "@/lib/i18n/messages";
-import type { Mountain } from "@/types/mountain";
+import type { PublicMountain } from "@/types/mountain";
 
 type Props = {
-  mountain: Mountain | null;
+  mountain: PublicMountain | null;
   onClose: () => void;
 };
 
@@ -36,8 +36,8 @@ export default function PeakInfo({ mountain, onClose }: Props) {
   }
 
   const routeText =
-    mountain.routes.length > 0
-      ? t("explore.routeCount", { count: mountain.routes.length })
+    mountain.routeCount > 0
+      ? t("explore.routeCount", { count: mountain.routeCount })
       : t("explore.noRoutes");
 
   return (
