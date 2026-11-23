@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { mountains } from "@/lib/mountains";
+import { mountains } from "@/lib/data/mountains";
 
 export default function Home() {
   return (

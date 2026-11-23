@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMountain, mountains } from "@/lib/mountains";
+import { getMountain, mountains } from "@/lib/data/mountains";
 
 export function generateStaticParams() {
   return mountains.map((m) => ({ slug: m.slug }));

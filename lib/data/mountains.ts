@@ -1,27 +1,10 @@
-// Peak14 데이터 정의
+// Peak14 산·루트 데이터
 //
+// 타입은 types/mountain.ts 에 있다.
 // 규칙(PRD 5번): 값을 모르면 추측해서 채우지 않고 null 로 둔다.
-// 화면에서는 null 을 "정보 없음"으로 표시한다.
 // 루트 정보는 출처(source)와 기준일(asOf)과 함께 등록한다.
 
-export type Route = {
-  id: string;
-  name: string;
-  distanceKm: number | null; // 총 거리(km)
-  durationDays: number | null; // 소요 시간(일)
-  lodgingCount: number | null; // 숙소 개수
-  amenities: string[] | null; // 편의시설
-  safetyNotes: string[] | null; // 안전 유의사항 (공식·현지 자료만)
-  source: string | null; // 출처
-  asOf: string | null; // 정보 기준일 (YYYY-MM-DD)
-};
-
-export type Mountain = {
-  slug: string;
-  nameKo: string;
-  nameEn: string;
-  routes: Route[];
-};
+import type { Mountain, Route } from "@/types/mountain";
 
 // 히말라야·카라코람 8,000m 14좌의 이름만 등록한다.
 // 높이, 위치 등 다른 정보는 출처를 확인한 뒤 추가한다.

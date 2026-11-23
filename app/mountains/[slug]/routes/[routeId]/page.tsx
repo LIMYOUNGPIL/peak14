@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMountain, getRoute } from "@/lib/mountains";
+import { getMountain, getRoute } from "@/lib/data/mountains";
 
 const NO_INFO = "정보 없음";
 
@@ -40,6 +40,12 @@ async function RouteDetail({
       "편의시설",
       route.amenities === null ? NO_INFO : route.amenities.join(", "),
     ],
+    [
+      "난이도",
+      route.difficulty === null
+        ? NO_INFO
+        : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty),
+    ],
   ];
 
   return (
@@ -66,12 +72,17 @@ async function RouteDetail({
 
       <section className="mt-8">
         <h2 className="mb-3 text-lg font-semibold">안전 유의사항</h2>
-        {route.safetyNotes === null || route.safetyNotes.length === 0 ? (
+        {route.safetyNotes.length === 0 ? (
           <p className="text-zinc-600 dark:text-zinc-400">{NO_INFO}</p>
         ) : (
-          <ul className="list-disc space-y-1 pl-5">
+          <ul className="list-disc space-y-2 pl-5">
             {route.safetyNotes.map((note) => (
-              <li key={note}>{note}</li>
+              <li key={note.text}>
+                {note.text}
+                <span className="block text-sm text-zinc-500">
+                  출처: {note.source} · 기준일: {note.asOf}
+                </span>
+              </li>
             ))}
           </ul>
         )}
@@ -79,6 +90,9 @@ async function RouteDetail({
 
       <p className="mt-8 text-sm text-zinc-500">
         출처: {show(route.source)} · 기준일: {show(route.asOf)}
+        {route.difficulty !== null && (
+          <> · 난이도 근거: {show(route.difficultySource)}</>
+        )}
       </p>
     </main>
   );

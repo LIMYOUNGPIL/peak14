@@ -1,0 +1,36 @@
+// 산·루트 데이터 구조 (DESIGN 4번)
+//
+// 규칙(PRD 5번): 값을 모르면 추측해서 채우지 않고 null 로 둔다.
+// 화면에서는 null 을 "정보 없음"으로 표시한다.
+
+// 난이도: 별 1~5개. 근거가 없으면 null.
+export type Difficulty = 1 | 2 | 3 | 4 | 5;
+
+// 안전 유의사항 한 건. 공식 기관이나 현지 자료로 등록한 것만 넣는다.
+// AI가 새로 만들거나 바꾸지 않는다.
+export type SafetyNote = {
+  text: string; // 유의사항 내용 (등록된 자료 그대로)
+  source: string; // 출처
+  asOf: string; // 정보 기준일 (YYYY-MM-DD)
+};
+
+export type Route = {
+  id: string;
+  name: string;
+  distanceKm: number | null; // 총 거리(km)
+  durationDays: number | null; // 소요 시간(일)
+  lodgingCount: number | null; // 숙소 개수
+  amenities: string[] | null; // 편의시설
+  difficulty: Difficulty | null; // 난이도 (루트 등록 시 근거와 함께 직접 부여)
+  difficultySource: string | null; // 난이도 근거(출처). 근거가 없으면 난이도도 null
+  safetyNotes: SafetyNote[]; // 안전 유의사항. 빈 배열이면 "정보 없음"
+  source: string | null; // 출처
+  asOf: string | null; // 정보 기준일 (YYYY-MM-DD)
+};
+
+export type Mountain = {
+  slug: string;
+  nameKo: string;
+  nameEn: string;
+  routes: Route[];
+};
