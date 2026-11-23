@@ -33,4 +33,12 @@ export type Mountain = {
   nameKo: string;
   nameEn: string;
   routes: Route[];
+
+  // 산 정보 (DESIGN 4.2). 값을 모르면 null → 화면에서 "정보 없음"
+  elevationM: number | null; // 높이(m)
+  lat: number | null; // 위도 (십진수 도)
+  lon: number | null; // 경도 (십진수 도)
+  countries: string[] | null; // 걸쳐 있는 나라
+  source: string | null; // 출처
+  asOf: string | null; // 정보 기준일 (YYYY-MM-DD)
 };

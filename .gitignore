@@ -42,3 +42,6 @@ next-env.d.ts
 
 # 지울 파일을 임시로 옮겨 두는 폴더
 /trash-can/
+
+# 지형 타일 내려받기 임시 보관
+/scripts/.terrain-cache/

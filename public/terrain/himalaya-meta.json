@@ -1,0 +1,21 @@
+{
+  "bounds": {
+    "lonW": 73.2,
+    "lonE": 89.2,
+    "latS": 27,
+    "latN": 36.6
+  },
+  "step": 0.02,
+  "width": 801,
+  "height": 481,
+  "format": "uint16 little-endian, 미터, 북서쪽부터 동쪽으로, 위에서 아래로",
+  "maxElevationM": 7898,
+  "sources": {
+    "elevation": "AWS Terrain Tiles (terrarium), 이 지역은 SRTM(zoom 7 이상)·GMTED2010 자료",
+    "attribution": "United States 3DEP (formerly NED) and global GMTED2010 and SRTM terrain data courtesy of the U.S. Geological Survey.",
+    "tiles": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/7/{x}/{y}.png",
+    "attributionPage": "https://github.com/tilezen/joerd/blob/master/docs/attribution.md"
+  },
+  "colorNote": "색은 고도와 경사만으로 계산했다. 위성 사진이 아니다.",
+  "generatedAt": "2026-11-23"
+}

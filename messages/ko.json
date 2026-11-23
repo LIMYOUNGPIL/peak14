@@ -27,6 +27,31 @@
     "signupFailed": "가입할 수 없습니다. 이미 가입했다면 로그인해 주세요.",
     "generic": "문제가 생겼습니다. 잠시 뒤 다시 시도해 주세요."
   },
+  "explore": {
+    "title": "히말라야 14좌",
+    "subtitle": "히말라야·카라코람 8,000m 봉우리",
+    "hint": "끌어서 돌려 보고, 산을 눌러 보세요",
+    "cursorDrag": "드래그",
+    "cursorOpen": "열기",
+    "listView": "목록으로 보기",
+    "sceneView": "3D로 보기",
+    "noWebgl": "이 기기에서는 3D를 표시할 수 없어 목록으로 보여 드립니다.",
+    "loadFailed": "지형 자료를 불러오지 못해 목록으로 보여 드립니다.",
+    "exaggeration": "고도 {n}배 과장",
+    "terrainSource": "지형: {text}",
+    "colorNote": "색은 고도·경사로 계산했고 위성 사진이 아닙니다.",
+    "elevation": "높이",
+    "location": "위치",
+    "countries": "나라",
+    "routes": "트레킹 루트",
+    "noRoutes": "등록된 루트 없음",
+    "routeCount": "{count}개 등록",
+    "source": "출처",
+    "viewRoutes": "트레킹 루트 보기",
+    "close": "닫기",
+    "loadingLabel": "불러오는 중",
+    "listLabel": "14좌 목록"
+  },
   "home": {
     "noRoutes": "등록된 루트 없음",
     "routeCount": "트레킹 루트 {count}개"
