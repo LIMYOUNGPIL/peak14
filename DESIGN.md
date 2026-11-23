@@ -270,9 +270,11 @@ my-app/
 
 | 이름 | 용도 | 공개 여부 | 현재 `.env` |
 |---|---|---|:-:|
-| `NEXT_PUBLIC_SUPABASE_URL` | 저장소 주소 | 공개 가능 | 없음 |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 공개용 키 (접근 규칙으로 보호) | 공개 가능 | 없음 |
-| `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용 관리 키 | 비밀 | 없음 |
+| `NEXT_PUBLIC_SUPABASE_URL` | 저장소 주소 | 공개 가능 | 있음 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 공개용 키 (접근 규칙으로 보호) | 공개 가능 | 있음 |
+| `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용 관리 키 | 비밀 | 있음 |
+| `SUPABASE_PROJECT_REF` | 저장소 프로젝트 식별값 (CLI용) | 비밀 취급 | 있음 |
+| `SUPABASE_DB_PASSWORD` | 저장소 DB 비밀번호 (CLI로 구조를 올릴 때) | 비밀 | 있음 |
 | `SUPABASE_ACCESS_TOKEN` | Supabase CLI 작업용 | 비밀 | 있음 |
 | `OPENAI_API_KEY` | AI 요약·번역·판정 | 비밀 | 있음 |
 | `VERCEL_TOKEN` | Vercel CLI 배포용 | 비밀 | 있음 |
