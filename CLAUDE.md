@@ -26,7 +26,7 @@
 - **배포는 Vercel을 사용한다.**
 - 이 프로젝트의 Next.js는 이전 버전과 다른 점이 있다. 코드를 쓰기 전에 `node_modules/next/dist/docs/`의 관련 문서를 먼저 읽는다. ([AGENTS.md](AGENTS.md) 참고)
 - 언어는 TypeScript, 스타일은 Tailwind CSS, 라우팅은 App Router(`app/`)를 쓴다.
-- 데이터 정의는 [lib/mountains.ts](lib/mountains.ts)에 있다.
+- 산·루트 데이터는 [lib/data/mountains.ts](lib/data/mountains.ts)에, 데이터 모양(타입)은 [types/](types/)에 있다.
 
 ## 작업 규칙
 
@@ -51,7 +51,7 @@
 - 외부 서비스 인증이 필요하면 **토큰 값을 사용자에게 묻거나 채팅에 출력하지 않는다.** `.env`에 있는 값을 읽어서 사용한다.
   - Supabase를 쓸 상황이 생기면 Supabase CLI를 설치해 `.env`의 `SUPABASE_ACCESS_TOKEN`으로 작업한다.
   - Vercel 작업(배포 등)이 필요하면 Vercel CLI를 설치해 `.env`의 `VERCEL_TOKEN`으로 인증해 작업한다.
-- `.env`에 있는 변수 이름 앞에 `NEXT_PUBLIC_`을 붙이지 않는다. 비밀 값은 서버 쪽 코드에서만 사용하고, 화면 코드에는 넣지 않는다.
+- 비밀 값에는 변수 이름 앞에 `NEXT_PUBLIC_`을 붙이지 않는다. 비밀 값은 서버 쪽 코드에서만 사용하고, 화면 코드에는 넣지 않는다. 공개돼도 되도록 만들어진 키(Supabase 프로젝트 주소와 공개용 anon 키)만 예외로 `NEXT_PUBLIC_`을 쓸 수 있다.
 
 ### 서브에이전트
 
