@@ -1,0 +1,34 @@
+{
+  "common": {
+    "siteName": "Peak14",
+    "tagline": "히말라야 14좌의 트레킹 루트와 안전 정보를 한곳에서 확인하세요.",
+    "noInfo": "정보 없음",
+    "loading": "불러오는 중...",
+    "backToMountains": "← 14좌 목록",
+    "login": "로그인",
+    "language": "한국어",
+    "comingSoon": "준비 중"
+  },
+  "home": {
+    "noRoutes": "등록된 루트 없음",
+    "routeCount": "트레킹 루트 {count}개"
+  },
+  "mountain": {
+    "routesTitle": "트레킹 루트",
+    "noRoutesMessage": "아직 등록된 루트가 없습니다. 출처를 확인한 정보만 등록합니다."
+  },
+  "route": {
+    "distance": "거리",
+    "duration": "소요 시간",
+    "lodging": "숙소 개수",
+    "amenities": "편의시설",
+    "difficulty": "난이도",
+    "safetyTitle": "안전 유의사항",
+    "source": "출처",
+    "asOf": "기준일",
+    "difficultySource": "난이도 근거",
+    "unitKm": " km",
+    "unitDays": "일",
+    "unitPlaces": "곳"
+  }
+}

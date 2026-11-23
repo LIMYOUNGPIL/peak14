@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMountain, mountains } from "@/lib/data/mountains";
+import { t } from "@/lib/i18n/messages";
 
 export function generateStaticParams() {
   return mountains.map((m) => ({ slug: m.slug }));
@@ -16,21 +17,21 @@ export default async function MountainPage({
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
       <Link href="/" className="text-sm text-zinc-500 hover:underline">
-        ← 14좌 목록
+        {t("common.backToMountains")}
       </Link>
 
-      <header className="mt-4 mb-8">
+      <section className="mt-4 mb-8">
         <h1 className="text-3xl font-bold tracking-tight">
           {mountain.nameKo}
         </h1>
         <p className="text-zinc-500">{mountain.nameEn}</p>
-      </header>
+      </section>
 
-      <h2 className="mb-4 text-lg font-semibold">트레킹 루트</h2>
+      <h2 className="mb-4 text-lg font-semibold">{t("mountain.routesTitle")}</h2>
 
       {mountain.routes.length === 0 ? (
         <p className="rounded-xl border border-dashed border-black/20 p-6 text-zinc-600 dark:border-white/20 dark:text-zinc-400">
-          아직 등록된 루트가 없습니다. 출처를 확인한 정보만 등록합니다.
+          {t("mountain.noRoutesMessage")}
         </p>
       ) : (
         <ul className="space-y-3">

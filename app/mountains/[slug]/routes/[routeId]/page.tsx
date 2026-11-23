@@ -1,20 +1,19 @@
 import { Suspense } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import InfoValue from "@/components/InfoValue";
 import { getMountain, getRoute } from "@/lib/data/mountains";
-
-const NO_INFO = "정보 없음";
-
-function show(value: string | number | null, unit = ""): string {
-  return value === null ? NO_INFO : `${value}${unit}`;
-}
+import { t } from "@/lib/i18n/messages";
 
 export default function RoutePage({
   params,
 }: PageProps<"/mountains/[slug]/routes/[routeId]">) {
   return (
     <Suspense
-      fallback={<p className="px-6 py-12 text-zinc-500">불러오는 중...</p>}
+      fallback={
+        <p className="px-6 py-12 text-zinc-500">{t("common.loading")}</p>
+      }
     >
       <RouteDetail params={params} />
     </Suspense>
@@ -32,19 +31,46 @@ async function RouteDetail({
   const route = getRoute(mountain, routeId);
   if (!route) notFound();
 
-  const rows: [string, string][] = [
-    ["거리", show(route.distanceKm, " km")],
-    ["소요 시간", show(route.durationDays, "일")],
-    ["숙소 개수", show(route.lodgingCount, "곳")],
+  // 값이 없으면 InfoValue 가 "정보 없음"으로 보여 준다.
+  const rows: [string, ReactNode][] = [
     [
-      "편의시설",
-      route.amenities === null ? NO_INFO : route.amenities.join(", "),
+      t("route.distance"),
+      <InfoValue
+        key="distance"
+        value={route.distanceKm}
+        unit={t("route.unitKm")}
+      />,
     ],
     [
-      "난이도",
-      route.difficulty === null
-        ? NO_INFO
-        : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty),
+      t("route.duration"),
+      <InfoValue
+        key="duration"
+        value={route.durationDays}
+        unit={t("route.unitDays")}
+      />,
+    ],
+    [
+      t("route.lodging"),
+      <InfoValue
+        key="lodging"
+        value={route.lodgingCount}
+        unit={t("route.unitPlaces")}
+      />,
+    ],
+    [
+      t("route.amenities"),
+      <InfoValue key="amenities" value={route.amenities?.join(", ")} />,
+    ],
+    [
+      t("route.difficulty"),
+      <InfoValue
+        key="difficulty"
+        value={
+          route.difficulty === null
+            ? null
+            : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty)
+        }
+      />,
     ],
   ];
 
@@ -71,16 +97,19 @@ async function RouteDetail({
       </dl>
 
       <section className="mt-8">
-        <h2 className="mb-3 text-lg font-semibold">안전 유의사항</h2>
+        <h2 className="mb-3 text-lg font-semibold">{t("route.safetyTitle")}</h2>
         {route.safetyNotes.length === 0 ? (
-          <p className="text-zinc-600 dark:text-zinc-400">{NO_INFO}</p>
+          <p className="text-zinc-600 dark:text-zinc-400">
+            <InfoValue value={null} />
+          </p>
         ) : (
           <ul className="list-disc space-y-2 pl-5">
             {route.safetyNotes.map((note) => (
               <li key={note.text}>
                 {note.text}
                 <span className="block text-sm text-zinc-500">
-                  출처: {note.source} · 기준일: {note.asOf}
+                  {t("route.source")}: {note.source} · {t("route.asOf")}:{" "}
+                  {note.asOf}
                 </span>
               </li>
             ))}
@@ -89,9 +118,14 @@ async function RouteDetail({
       </section>
 
       <p className="mt-8 text-sm text-zinc-500">
-        출처: {show(route.source)} · 기준일: {show(route.asOf)}
+        {t("route.source")}: <InfoValue value={route.source} /> ·{" "}
+        {t("route.asOf")}: <InfoValue value={route.asOf} />
         {route.difficulty !== null && (
-          <> · 난이도 근거: {show(route.difficultySource)}</>
+          <>
+            {" "}
+            · {t("route.difficultySource")}:{" "}
+            <InfoValue value={route.difficultySource} />
+          </>
         )}
       </p>
     </main>
