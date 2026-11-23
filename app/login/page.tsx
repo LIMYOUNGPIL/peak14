@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import AuthForm from "@/components/AuthForm";
 import { login } from "@/lib/auth/actions";
+import { enabledProviders } from "@/lib/auth/providers";
+import { loginWithProvider } from "@/lib/auth/social";
 import { safeNextPath } from "@/lib/auth/validation";
 import { t } from "@/lib/i18n/messages";
 
@@ -19,13 +21,19 @@ async function LoginForm({
 }: {
   searchParams: PageProps<"/login">["searchParams"];
 }) {
-  const { next } = await searchParams;
+  const { next, error } = await searchParams;
+  const providers = enabledProviders().map((id) => ({
+    id,
+    label: id === "google" ? t("auth.withGoogle") : t("auth.withKakao"),
+  }));
 
   return (
     <AuthForm
       action={login}
       mode="login"
       next={safeNextPath(next)}
+      initialError={error === "social" ? t("auth.socialFailed") : null}
+      social={{ action: loginWithProvider, providers, divider: t("auth.socialDivider") }}
       text={{
         title: t("auth.loginTitle"),
         email: t("auth.email"),

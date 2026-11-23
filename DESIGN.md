@@ -278,7 +278,8 @@ my-app/
 | `SUPABASE_ACCESS_TOKEN` | Supabase CLI 작업용 | 비밀 | 있음 |
 | `OPENAI_API_KEY` | AI 요약·번역·판정 | 비밀 | 있음 |
 | `VERCEL_TOKEN` | Vercel CLI 배포용 | 비밀 | 있음 |
-| 소셜 로그인 제공사 키 | 제공사를 정한 뒤 이름을 추가 | 비밀 | 없음 |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | 구글 로그인 (둘 다 있어야 켜짐) | 비밀 | 없음 |
+| `KAKAO_CLIENT_ID`, `KAKAO_CLIENT_SECRET` | 카카오 로그인 (둘 다 있어야 켜짐) | 비밀 | 없음 |
 
 ---
 
