@@ -6,10 +6,15 @@
 // 난이도: 별 1~5개. 근거가 없으면 null.
 export type Difficulty = 1 | 2 | 3 | 4 | 5;
 
+// 숫자 하나 또는 범위. 자료가 "160~230km"처럼 범위로 적었다면 범위 그대로 담는다.
+// (하나의 숫자로 바꾸면 자료에 없는 값이 되기 때문이다)
+export type Measure = number | { min: number; max: number };
+
 // 안전 유의사항 한 건. 공식 기관이나 현지 자료로 등록한 것만 넣는다.
 // AI가 새로 만들거나 바꾸지 않는다.
 export type SafetyNote = {
-  text: string; // 유의사항 내용 (등록된 자료 그대로)
+  text: string; // 유의사항 내용 (등록된 자료 그대로. 번역하지 않는다)
+  language: "ko" | "en"; // 원문 언어. 영어 원문은 영어 그대로 보여 주고 그 사실을 표시한다
   source: string; // 출처
   asOf: string; // 정보 기준일 (YYYY-MM-DD)
 };
@@ -17,8 +22,8 @@ export type SafetyNote = {
 export type Route = {
   id: string;
   name: string;
-  distanceKm: number | null; // 총 거리(km)
-  durationDays: number | null; // 소요 시간(일)
+  distanceKm: Measure | null; // 총 거리(km)
+  durationDays: Measure | null; // 소요 시간(일)
   lodgingCount: number | null; // 숙소 개수
   amenities: string[] | null; // 편의시설
   difficulty: Difficulty | null; // 난이도 (루트 등록 시 근거와 함께 직접 부여)

@@ -6,6 +6,7 @@ import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
+import { formatMeasure } from "@/lib/format";
 import { t } from "@/lib/i18n/messages";
 
 export default function RoutePage({
@@ -61,7 +62,7 @@ async function RouteDetail({
       t("route.distance"),
       <InfoValue
         key="distance"
-        value={route.distanceKm}
+        value={formatMeasure(route.distanceKm)}
         unit={t("route.unitKm")}
       />,
     ],
@@ -69,7 +70,7 @@ async function RouteDetail({
       t("route.duration"),
       <InfoValue
         key="duration"
-        value={route.durationDays}
+        value={formatMeasure(route.durationDays)}
         unit={t("route.unitDays")}
       />,
     ],
@@ -143,6 +144,7 @@ async function RouteDetail({
               <li key={note.text}>
                 {note.text}
                 <span className="block text-sm text-zinc-500">
+                  {note.language === "en" && <>{t("route.originalEnglish")} · </>}
                   {t("route.source")}: {note.source} · {t("route.asOf")}:{" "}
                   {note.asOf}
                 </span>

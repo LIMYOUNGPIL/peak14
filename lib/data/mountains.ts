@@ -20,6 +20,70 @@ const CHINA = "중국";
 const INDIA = "인도";
 const PAKISTAN = "파키스탄";
 
+// ---------------------------------------------------------------------------
+// 등록된 루트 (출처를 직접 읽어 확인한 값만 넣는다. 자료에 없는 값은 null → 화면에서 "정보 없음")
+// ---------------------------------------------------------------------------
+
+// 안전 유의사항의 출처: 히말라야 구조협회(Himalayan Rescue Association, HRA) 공식 사이트.
+// 두 페이지 모두 갱신일이 적혀 있지 않아서, 기준일에는 우리가 읽어서 확인한 날을 적는다.
+// 문구는 영어 원문 그대로이며 번역하지 않는다. (PRD: 안전 유의사항은 AI가 만들거나 바꾸지 않는다)
+const HRA_ALTITUDE =
+  "히말라야 구조협회(HRA) https://www.himalayanrescue.org/altitude (확인일 2026-11-23, 페이지에 갱신일 표시 없음)";
+const HRA_HEALTH =
+  "히말라야 구조협회(HRA) https://www.himalayanrescue.org/health-problems (확인일 2026-11-23, 페이지에 갱신일 표시 없음)";
+
+const annapurnaCircuit: Route = {
+  id: "annapurna-circuit",
+  name: "안나푸르나 서킷 (Annapurna Circuit)",
+  // 위키백과 본문: "The total length of the route varies between 160 and 230 km (100-145 mi)"
+  // (정보 상자에는 131 km 도 적혀 있으나 본문과 달라서, 본문의 범위를 따른다. 왕복·편도 여부는 자료에 없다.)
+  distanceKm: { min: 160, max: 230 },
+  // 위키백과 본문: "The trek usually takes about 15–20 days"
+  durationDays: { min: 15, max: 20 },
+  // 숙소 수·편의시설은 자료를 확인하지 못했다.
+  lodgingCount: null,
+  amenities: null,
+  // 위키백과는 "Difficult"라고만 적었고 별점 기준은 없어서, 난이도(별 1~5개)는 비워 둔다.
+  difficulty: null,
+  difficultySource: null,
+  difficultyAsOf: null,
+  safetyNotes: [
+    {
+      text: "…after 3000 meters your sleeping altitude is no more than 300 meters to 400 meters higher than the previous day's sleeping altitude",
+      language: "en",
+      source: HRA_ALTITUDE,
+      asOf: "2026-11-23",
+    },
+    {
+      text: "a willingness to rest or DESCEND if symptoms worsen",
+      language: "en",
+      source: HRA_ALTITUDE,
+      asOf: "2026-11-23",
+    },
+    {
+      text: "Never ascend with obvious symptoms.",
+      language: "en",
+      source: HRA_HEALTH,
+      asOf: "2026-11-23",
+    },
+    {
+      text: "Descend if symptoms increase.",
+      language: "en",
+      source: HRA_HEALTH,
+      asOf: "2026-11-23",
+    },
+    {
+      text: "every second or third day should be rest day for acclimatization",
+      language: "en",
+      source: HRA_HEALTH,
+      asOf: "2026-11-23",
+    },
+  ],
+  source:
+    "위키백과 Annapurna Circuit https://en.wikipedia.org/wiki/Annapurna_Circuit (확인일 2026-11-23, 문서 마지막 편집 2026-11-04)",
+  asOf: "2026-11-23",
+};
+
 // 히말라야·카라코람 8,000m 14좌.
 // 루트 정보는 출처를 확인한 뒤 routes 에 추가한다. 지금은 모든 산의 루트가 비어 있다.
 export const mountains: Mountain[] = [
@@ -41,7 +105,7 @@ export const mountains: Mountain[] = [
     elevationM: 8163, lat: 28.54944444, lon: 84.56194444, countries: [NEPAL], source: SOURCE, asOf: AS_OF },
   { slug: "nanga-parbat", nameKo: "낭가파르바트", nameEn: "Nanga Parbat", routes: [],
     elevationM: 8125, lat: 35.2375, lon: 74.58916667, countries: [PAKISTAN], source: SOURCE, asOf: AS_OF },
-  { slug: "annapurna", nameKo: "안나푸르나", nameEn: "Annapurna", routes: [],
+  { slug: "annapurna", nameKo: "안나푸르나", nameEn: "Annapurna", routes: [annapurnaCircuit],
     elevationM: 8091, lat: 28.59611111, lon: 83.82027778, countries: [NEPAL], source: SOURCE, asOf: AS_OF },
   { slug: "gasherbrum-1", nameKo: "가셔브룸 1봉", nameEn: "Gasherbrum I", routes: [],
     elevationM: 8080, lat: 35.72444444, lon: 76.69638889, countries: [PAKISTAN, CHINA], source: SOURCE, asOf: AS_OF },
