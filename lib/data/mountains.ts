@@ -38,10 +38,30 @@ const PAKISTAN = "파키스탄";
 // 안전 유의사항의 출처: 히말라야 구조협회(Himalayan Rescue Association, HRA) 공식 사이트.
 // 두 페이지 모두 갱신일이 적혀 있지 않아서, 기준일에는 우리가 읽어서 확인한 날을 적는다.
 // 문구는 영어 원문 그대로이며 번역하지 않는다. (PRD: 안전 유의사항은 AI가 만들거나 바꾸지 않는다)
+// 루트 개요의 출처는 각 루트를 다룬 위키백과 영어 문서다. 문서에 적힌 내용만 한국어로 옮겼고,
+// 옮기는 과정의 오류가 있을 수 있어 화면에 "AI가 한국어로 옮김"과 원문 링크를 함께 보여 준다.
+function overview(page: string, text: string) {
+  return {
+    text,
+    source: `https://en.wikipedia.org/wiki/${page}`,
+    asOf: "2026-11-23",
+  };
+}
+
 const HRA_ALTITUDE =
   "히말라야 구조협회(HRA) https://www.himalayanrescue.org/altitude (확인일 2026-11-23, 페이지에 갱신일 표시 없음)";
 const HRA_HEALTH =
   "히말라야 구조협회(HRA) https://www.himalayanrescue.org/health-problems (확인일 2026-11-23, 페이지에 갱신일 표시 없음)";
+
+// 히말라야 구조협회(HRA)의 고산병 안내. 3,000 m 이상을 걷는 루트에 공통으로 해당하는 일반 안내이며,
+// 루트별로 따로 만든 안내가 아니다. 영어 원문 그대로 번역하지 않고 쓴다.
+const HRA_SAFETY_NOTES = [
+  { text: "…after 3000 meters your sleeping altitude is no more than 300 meters to 400 meters higher than the previous day's sleeping altitude", source: HRA_ALTITUDE },
+  { text: "a willingness to rest or DESCEND if symptoms worsen", source: HRA_ALTITUDE },
+  { text: "Never ascend with obvious symptoms.", source: HRA_HEALTH },
+  { text: "Descend if symptoms increase.", source: HRA_HEALTH },
+  { text: "every second or third day should be rest day for acclimatization", source: HRA_HEALTH },
+].map((n) => ({ ...n, language: "en" as const, asOf: "2026-11-23" }));
 
 const annapurnaCircuit: Route = {
   id: "annapurna-circuit",
@@ -58,38 +78,11 @@ const annapurnaCircuit: Route = {
   difficulty: null,
   difficultySource: null,
   difficultyAsOf: null,
-  safetyNotes: [
-    {
-      text: "…after 3000 meters your sleeping altitude is no more than 300 meters to 400 meters higher than the previous day's sleeping altitude",
-      language: "en",
-      source: HRA_ALTITUDE,
-      asOf: "2026-11-23",
-    },
-    {
-      text: "a willingness to rest or DESCEND if symptoms worsen",
-      language: "en",
-      source: HRA_ALTITUDE,
-      asOf: "2026-11-23",
-    },
-    {
-      text: "Never ascend with obvious symptoms.",
-      language: "en",
-      source: HRA_HEALTH,
-      asOf: "2026-11-23",
-    },
-    {
-      text: "Descend if symptoms increase.",
-      language: "en",
-      source: HRA_HEALTH,
-      asOf: "2026-11-23",
-    },
-    {
-      text: "every second or third day should be rest day for acclimatization",
-      language: "en",
-      source: HRA_HEALTH,
-      asOf: "2026-11-23",
-    },
-  ],
+  safetyNotes: HRA_SAFETY_NOTES,
+  overview: overview(
+    "Annapurna_Circuit",
+    "트레킹은 보통 마르샹디강 계곡의 베시사하르 또는 불불레에서 시작해 칼리 간다키 협곡에서 끝납니다. 길이 가장 높아지는 곳은 토롱 라 고개(5,416 m)입니다.\n10~11월이 네팔에서 가장 인기 있는 시즌입니다. 12~3월에는 5,400 m가 넘는 토롱 라 고개가 눈으로 막혀 며칠씩 닫힐 수 있습니다. 몬순 기간을 포함해 일 년 내내 대부분 구간을 걸을 수 있다고도 합니다.\n위키백과 정보 상자에는 난이도가 ‘어려움(Difficult)’으로, 본문에는 ‘보통에서 상당히 어려운 수준’으로 적혀 있습니다.",
+  ),
   source:
     "위키백과 Annapurna Circuit https://en.wikipedia.org/wiki/Annapurna_Circuit (확인일 2026-11-23, 문서 마지막 편집 2026-11-04)",
   asOf: "2026-11-23",
@@ -98,13 +91,43 @@ const annapurnaCircuit: Route = {
 // 히말라야·카라코람 8,000m 14좌.
 // 루트 정보는 출처를 확인한 뒤 routes 에 추가한다. 지금은 모든 산의 루트가 비어 있다.
 export const mountains: Mountain[] = [
-  { slug: "everest", nameKo: "에베레스트", nameEn: "Everest", routes: [],
+  { slug: "everest", nameKo: "에베레스트", nameEn: "Everest", routes: [{
+      id: "everest-base-camp-trek",
+      name: "에베레스트 베이스캠프 트레킹 (남쪽, 네팔)",
+      // 자료에 전체 거리와 전체 일수가 적혀 있지 않아 비워 둔다. (구간별 일정은 개요에 있다)
+      distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Everest_base_camps", "남쪽(네팔) 에베레스트 베이스캠프(해발 5,364 m) 트레킹은 히말라야에서 가장 인기 있는 트레킹 코스 가운데 하나로, 해마다 약 4만 명이 루클라 공항(2,846 m)에서 출발해 걷습니다. 보통 카트만두에서 루클라까지 비행기로 간 뒤 걷기 시작합니다. 카트만두에서 루클라까지는 도로가 없습니다.\n일정은 이렇게 소개됩니다. 루클라에서 두드 코시강 계곡을 따라 셰르파의 중심지 남체 바자르(3,440 m)까지 약 이틀이 걸리고, 이곳에서 고소 적응을 위해 하루 쉬는 것이 일반적입니다. 이어 이틀을 더 걸어 딩보체(4,260 m)에 가서 다시 하루 쉬고, 이틀을 더 가면 칼라파타르(5,545 m)와 푸모리 아래의 평지 고락셉을 거쳐 베이스캠프에 닿습니다. 대부분 텡보체 수도원을 지나는 전통 길을 쓰지만, 최근에는 몽라와 폭체를 지나는 높은 길도 인기를 얻고 있습니다.\n2015년 4월 지진으로 일부 길이 손상되어 수리가 필요했습니다. 2022년 6월 17일에는 쿰부 빙하가 빠르게 녹고 얇아져 트레커에게 위험하다는 이유로 베이스캠프를 200~400 m 아래로 옮긴다고 발표되었습니다."),
+      source: "위키백과 Everest base camps https://en.wikipedia.org/wiki/Everest_base_camps (확인일 2026-11-23, 문서 마지막 수정 2026-11-22)",
+      asOf: "2026-11-23",
+    }],
     elevationM: 8849, lat: 27.98833333, lon: 86.92527778, countries: [NEPAL, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Mount_Everest", "에베레스트는 네팔어로 사가르마타, 셰르파어로 차몰랑마, 티베트어로 조모랑마라고 불립니다. 해발 기준으로 지구에서 가장 높은 산이며, 정상이 중국과 네팔의 국경에 걸쳐 있습니다. 가장 최근 높이는 2020년 네팔과 중국의 공동 측량으로 8,848.86 m로 측정되었습니다.\n처음 정상에 오르려 한 이들은 영국 등반가들이었습니다. 1924년 조지 맬러리와 앤드루 어빈이 정상 도전에 나섰다가 돌아오지 못해, 이들이 먼저 정상에 올랐는지는 지금도 논쟁거리입니다. 기록으로 확인된 첫 등정은 1953년 텐징 노르가이와 에드먼드 힐러리가 남동릉 루트로 이루었습니다.\n고산병, 날씨, 바람, 눈사태, 쿰부 아이스폴 같은 위험이 있어, 2024년 5월까지 340명이 이 산에서 숨졌습니다.") },
-  { slug: "k2", nameKo: "K2", nameEn: "K2", routes: [],
+  { slug: "k2", nameKo: "K2", nameEn: "K2", routes: [{
+      id: "baltoro-concordia",
+      name: "발토로 빙하·콩코르디아 트레킹 (K2 베이스캠프 방면)",
+      // 문서에 거리와 일수가 없어 비워 둔다.
+      distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Baltoro_Glacier", "발토로 빙하는 파키스탄 길기트발티스탄 시가르 지구의 카라코람에 있으며, K2를 비롯해 반경 20 km 안에 8,000 m가 넘는 봉우리 4개가 둘러싸고 있습니다. ‘발토로’는 발티어로 ‘뼈를 부수는 것(Bone breaker)’이라는 뜻입니다.\n발토로 빙하와 K2에서 내려오는 고드윈오스틴 빙하가 만나는 곳을 콩코르디아(해발 4,600 m)라고 합니다. 콩코르디아는 이름난 트레킹 목적지이고, K2 베이스캠프도 마찬가지입니다."),
+      source: "위키백과 Baltoro Glacier https://en.wikipedia.org/wiki/Baltoro_Glacier (확인일 2026-11-23, 문서 마지막 수정 2026-11-22)",
+      asOf: "2026-11-23",
+    }],
     elevationM: 8611, lat: 35.8825, lon: 76.51333333, countries: [PAKISTAN, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("K2", "K2는 ‘마운트 고드윈오스틴’이라고도 불리며, 에베레스트 다음으로 높은 산입니다. 카라코람 산맥에 있고, 파키스탄이 관할하는 길기트발티스탄과 중국 신장 지역에 걸쳐 있습니다.\n‘야만적인 산(Savage Mountain)’이라는 별명은 1953년 미국 원정대의 조지 벨이 “당신을 죽이려 드는 야만적인 산”이라고 말한 데서 나왔습니다. ‘산 중의 산’, ‘등반가들의 산’이라는 별명도 있습니다.\n1954년 아르디토 데지오가 이끈 이탈리아 원정대의 리노 라체델리와 아킬레 콤파뇨니가 처음 정상에 올랐습니다. 2021년 1월에는 니르말 푸르자와 밍마 갤제 셰르파가 이끄는 네팔 등반가 10명이 8,000m 봉우리 가운데 마지막으로 겨울 등정에 성공했습니다.") },
-  { slug: "kangchenjunga", nameKo: "칸첸중가", nameEn: "Kangchenjunga", routes: [],
+  { slug: "kangchenjunga", nameKo: "칸첸중가", nameEn: "Kangchenjunga", routes: [{
+      id: "goecha-la-trek",
+      name: "고차 라 트레킹 (칸첸중가 남동쪽 조망, 인도 시킴)",
+      // 자료에 적힌 구간 거리(10+7+10+10+14+16+17)를 더한 값이다. 합계는 자료에 없고 우리가 계산했다.
+      distanceKm: 84, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Goecha_La", "고차 라(해발 4,940 m)는 인도 시킴주 기알싱 지구의 높은 고개입니다. 세계에서 세 번째로 높은 칸첸중가의 남동쪽 면을 볼 수 있고, 칸첸중가 등반을 노리는 이들의 베이스캠프이기도 합니다.\n칸첸중가 국립공원을 지나는 이 트레킹은 하루에 걸어야 하는 거리가 만만치 않을 수 있고, 짧은 시간에 고도 변화가 커서 고소 적응이 중요하다고 합니다.\n문서에 소개된 기본 일정은 다음과 같습니다. Siliguri에서 Yuksom까지 차로 이동한 뒤 걷습니다. Yuksom → Sachen 10 km, Sachen → Tshoka 7 km, Tshoka → Dzongri 10 km. 하루 쉬며 Dzongri La 고개(4,417 m)까지 다녀온 뒤, Dzongri → Thansing 10 km, Thansing → 고차 라 왕복 14 km, Thansing → Tshoka 16 km, Tshoka → Yuksom 17 km를 걷고, 다시 차로 Siliguri로 돌아옵니다. 적힌 구간 거리를 모두 더하면 84 km입니다(합계는 문서에 없고 계산한 값입니다)."),
+      source: "위키백과 Goecha La https://en.wikipedia.org/wiki/Goecha_La (확인일 2026-11-23, 문서 마지막 수정 2026-11-22). 거리는 문서의 기본 일정 구간 거리를 더한 값",
+      asOf: "2026-11-23",
+    }],
     elevationM: 8586, lat: 27.7025, lon: 88.14666667, countries: [NEPAL, INDIA], source: SOURCE, asOf: AS_OF,
     story: story("Kangchenjunga", "칸첸중가는 세계에서 세 번째로 높은 산이며, 네팔 코시주와 인도 시킴주의 경계 지역에 있습니다. 네팔과 시킴에서 신성한 산으로 여겨집니다.\n1852년까지는 세계에서 가장 높은 산으로 알려져 있었습니다. 1849년 인도 대삼각측량의 정밀한 측정으로 에베레스트가 더 높다는 것이 밝혀졌고, 검증을 거쳐 1856년 칸첸중가가 세 번째로 높다고 공식 발표되었습니다.\n1955년 5월 25일 영국 원정대의 조 브라운과 조지 밴드가 처음 올랐습니다. 이들은 시킴 왕국의 초갈에게 한 ‘산의 정상은 침범하지 않겠다’는 약속을 지키려고 진짜 정상 바로 아래에서 멈췄습니다. 인도 쪽 사면은 등반이 금지되어 있고, 2016년 인접한 칸첸중가 국립공원은 유네스코 세계유산으로 지정되었습니다.") },
   { slug: "lhotse", nameKo: "로체", nameEn: "Lhotse", routes: [],
@@ -119,13 +142,43 @@ export const mountains: Mountain[] = [
   { slug: "dhaulagiri", nameKo: "다울라기리", nameEn: "Dhaulagiri", routes: [],
     elevationM: 8167, lat: 28.69611111, lon: 83.49527778, countries: [NEPAL], source: SOURCE, asOf: AS_OF,
     story: story("Dhaulagiri", "다울라기리는 네팔에 있으며 세계에서 일곱 번째로 높고, 한 나라의 국경 안에 있는 산으로는 가장 높습니다. 간다키강 유역에서 가장 높은 지점이기도 합니다.\n1960년 5월 13일 스위스·오스트리아·네팔 합동 원정대가 처음 올랐습니다. 동쪽 34 km에는 안나푸르나 I봉이 있고, 두 산 사이를 흐르는 칼리 간다키강의 협곡은 세계에서 가장 깊다고 합니다. 남쪽의 포카라는 두 산군을 찾는 등반가와 트레커의 관문입니다.") },
-  { slug: "manaslu", nameKo: "마나슬루", nameEn: "Manaslu", routes: [],
+  { slug: "manaslu", nameKo: "마나슬루", nameEn: "Manaslu", routes: [{
+      id: "manaslu-circuit",
+      name: "마나슬루 서킷 (Manaslu Circuit)",
+      // 문서: "The popular Manaslu trekking route of 177 kilometres". 왕복·편도 여부와 일수는 적혀 있지 않다.
+      distanceKm: 177, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Manaslu", "마나슬루 서킷으로 알려진 트레킹 코스는 177 km이며, 마나슬루 산군을 돌아 고개를 넘어 안나푸르나 쪽으로 내려갑니다. 네팔 정부는 이 코스의 트레킹을 1991년에야 허가했습니다.\n길은 부디 간다키강을 따라가는 옛 소금 교역로를 따릅니다. 길에서는 6,500 m가 넘는 봉우리 10개가 보이고, 그중 몇 개는 7,000 m가 넘습니다. 코스에서 가장 높은 곳은 라르키아 라 고개(5,106 m)이며, 이 고개는 다르마샬라와 빔탕 사이에 있고 네팔 히말라야에서 가장 긴 고개 중 하나로 소개됩니다."),
+      source: "위키백과 Manaslu https://en.wikipedia.org/wiki/Manaslu 와 Larkya La https://en.wikipedia.org/wiki/Larkya_La (확인일 2026-11-23, 문서 마지막 수정 2026-11-22)",
+      asOf: "2026-11-23",
+    }],
     elevationM: 8163, lat: 28.54944444, lon: 84.56194444, countries: [NEPAL], source: SOURCE, asOf: AS_OF,
     story: story("Manaslu", "마나슬루는 ‘영혼의 산(mountain of the spirit)’이라는 뜻이며, 지성이나 영혼을 뜻하는 산스크리트어 ‘마나사(manasa)’에서 왔습니다. 쿠탕(Kutang)이라고도 불립니다. 세계에서 여덟 번째로 높고, 네팔 서중부 고르카 지구에서 가장 높은 봉우리입니다.\n1956년 5월 9일 일본 원정대의 이마니시 도시오와 걀젠 노르부가 처음 올랐습니다. 긴 능선과 계곡 빙하 덕분에 사방에서 접근할 수 있고, 멀리서도 눈에 띄는 우뚝한 봉우리입니다.\n네팔 정부는 마나슬루 일대 트레킹을 1991년에야 허가했습니다. 트레킹 길은 부디 간다키강을 따라가는 옛 소금 교역로를 따릅니다.") },
-  { slug: "nanga-parbat", nameKo: "낭가파르바트", nameEn: "Nanga Parbat", routes: [],
+  { slug: "nanga-parbat", nameKo: "낭가파르바트", nameEn: "Nanga Parbat", routes: [{
+      id: "fairy-meadows-trek",
+      name: "페어리 메도 트레킹 (낭가파르바트 라키오트 면)",
+      // 문서: 타토 마을에서 페어리 메도까지 5 km 트레킹 (그 앞 15 km 는 지프 길이라 걷는 거리에서 뺐다)
+      distanceKm: 5, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Fairy_Meadows", "페어리 메도(현지 이름 조트)는 파키스탄 길기트발티스탄 디아메르 지구에 있는 초원으로, 낭가파르바트 베이스캠프 지점 가운데 한 곳 근처입니다. 해발 약 3,300 m이며, 라키오트 면으로 낭가파르바트를 오르는 등반가들의 출발점입니다.\n가는 길: 카라코람 하이웨이의 라이코트 다리에서 타토(Tato) 마을까지 약 15 km는 지프가 다니는 길입니다. 좁고 험한 이 자갈길은 현지인만 운전할 수 있고, 2013년 세계보건기구는 이 길을 세계에서 두 번째로 위험한 도로라고 발표했습니다. 타토에서 페어리 메도까지는 5 km를 걸으며 약 3~4시간이 걸립니다.\n관광 시즌은 4월부터 9월까지 6개월입니다. 방문객은 보통 이곳에서 낭가파르바트 베이스캠프까지 하이킹합니다. 이곳에서 정상으로 흔히 오해되는 봉우리는 실제로는 노스 피크(7,816 m)이고, 진짜 정상은 그 뒤에 가려져 있습니다."),
+      source: "위키백과 Fairy Meadows https://en.wikipedia.org/wiki/Fairy_Meadows (확인일 2026-11-23, 문서 마지막 수정 2026-11-22). 거리는 타토 마을에서 페어리 메도까지의 걷는 구간",
+      asOf: "2026-11-23",
+    }],
     elevationM: 8125, lat: 35.2375, lon: 74.58916667, countries: [PAKISTAN], source: SOURCE, asOf: AS_OF,
     story: story("Nanga_Parbat", "낭가파르바트는 시나어로 ‘디아미르(Diamer)’라고도 불리며, 세계에서 아홉 번째로 높은 산입니다. 파키스탄 관할 길기트발티스탄에서 인더스강이 가장 북쪽으로 굽는 곳의 남동쪽에 있으며, 히말라야에서 가장 서쪽에 있는 주요 봉우리라 히말라야 산맥의 서쪽 끝을 지키는 기둥으로 여겨집니다.\n주변 지형 위로 크게 솟아 있어, 세계 100대 고봉 가운데 에베레스트 다음으로 상대적 높이가 큽니다. 몹시 어려운 등반으로 유명하고 사망자가 많아 ‘킬러 마운틴(Killer Mountain)’이라는 별명이 붙었습니다. 기네스 세계 기록에 따르면 해마다 약 7 mm씩 높아지는, 세계에서 가장 빨리 자라는 산입니다.") },
-  { slug: "annapurna", nameKo: "안나푸르나", nameEn: "Annapurna", routes: [annapurnaCircuit],
+  { slug: "annapurna", nameKo: "안나푸르나", nameEn: "Annapurna", routes: [annapurnaCircuit, {
+      id: "annapurna-sanctuary",
+      name: "안나푸르나 생추어리 (Annapurna Sanctuary)",
+      // 문서에 거리와 일수가 없어 비워 둔다.
+      distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Annapurna_Sanctuary", "안나푸르나 생추어리는 포카라에서 정북쪽으로 40 km 떨어진 높은 빙하 분지입니다. 해발 4,000 m가 넘는 타원형 고원을 7,000 m가 넘는 봉우리가 대부분인 안나푸르나 산군이 둘러싸고 있고, 입구는 히운출리와 마차푸차레 봉우리 사이의 좁은 계곡 하나뿐입니다. 사방이 높은 산이라 한여름에도 하루 햇빛이 드는 시간은 7시간뿐입니다.\n이곳은 구룽족이 신성하게 여겨 온 곳이며, 외부인은 1956년에야 처음 들어갔습니다. 지금은 안나푸르나 보호지역 프로젝트에 속해 방문자 수, 땔감 채취, 가축 방목에 제한이 있습니다."),
+      source: "위키백과 Annapurna Sanctuary https://en.wikipedia.org/wiki/Annapurna_Sanctuary (확인일 2026-11-23, 문서 마지막 수정 2026-11-22)",
+      asOf: "2026-11-23",
+    }],
     elevationM: 8091, lat: 28.59611111, lon: 83.82027778, countries: [NEPAL], source: SOURCE, asOf: AS_OF,
     story: story("Annapurna", "안나푸르나는 네팔 중북부 간다키주의 안나푸르나 산군에 있으며, 세계에서 열 번째로 높고 등반이 어렵고 위험하기로 유명합니다.\n1950년 모리스 에르조그가 이끈 프랑스 원정대가 북벽으로 정상에 올라, 사상 처음으로 오른 8,000m 봉우리가 되었습니다. 산군 일대는 네팔에서 처음이자 가장 큰 보호구역인 안나푸르나 보호지역으로 지정되어 있고, 안나푸르나 생추어리와 안나푸르나 서킷 같은 세계적인 트레킹 코스가 있습니다.\n수십 년 동안 주요 8,000m 봉우리 가운데 등정자 대비 사망률이 가장 높았습니다. 기네스 세계 기록 기준 2025년 2월의 사망률은 13.42%(등정 559회 중 사망 75명)입니다.") },
   { slug: "gasherbrum-1", nameKo: "가셔브룸 1봉", nameEn: "Gasherbrum I", routes: [],

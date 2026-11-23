@@ -123,6 +123,30 @@ async function RouteDetail({
         {route.name}
       </h1>
 
+      {/* 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글 (AI가 옮겼다는 표시와 원문 링크 포함) */}
+      {route.overview && (
+        <section className="mb-8 rounded-xl bg-black/[.04] p-5 dark:bg-white/[.06]">
+          <h2 className="mb-3 text-lg font-semibold">{t("route.overviewTitle")}</h2>
+          <div className="space-y-3 text-[15px] leading-7">
+            {route.overview.text.split("\n").map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
+          <p className="mt-4 border-t border-black/10 pt-3 text-xs text-zinc-500 dark:border-white/15">
+            {t("route.overviewNote")}{" "}
+            <a
+              href={route.overview.source}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              {t("route.overviewSource")}
+            </a>{" "}
+            ({route.overview.asOf})
+          </p>
+        </section>
+      )}
+
       <dl className="divide-y divide-black/10 rounded-xl border border-black/10 dark:divide-white/15 dark:border-white/15">
         {rows.map(([label, value]) => (
           <div key={label} className="flex justify-between gap-4 px-5 py-3">

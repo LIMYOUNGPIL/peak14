@@ -30,6 +30,8 @@ export type Route = {
   difficultySource: string | null; // 난이도 근거(출처). 근거가 없으면 난이도도 null
   difficultyAsOf: string | null; // 난이도 근거의 기준일 (YYYY-MM-DD)
   safetyNotes: SafetyNote[]; // 안전 유의사항. 빈 배열이면 "정보 없음"
+  // 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글. 출처 링크와 기준일을 함께 가진다. 없으면 null
+  overview: { text: string; source: string; asOf: string } | null;
   source: string | null; // 출처
   asOf: string | null; // 정보 기준일 (YYYY-MM-DD)
 };
