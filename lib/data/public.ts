@@ -18,6 +18,7 @@ export function toPublicMountain(m: Mountain): PublicMountain {
     countries: m.countries,
     source: m.source,
     asOf: m.asOf,
+    story: m.story,
     routeCount: m.routes.length,
   };
 }

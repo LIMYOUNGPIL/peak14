@@ -101,6 +101,27 @@ body {
 }
 .hx-pill:hover { background: rgba(255, 255, 255, 0.22); }
 
+/* 오른쪽 위 산 이야기 카드 */
+.hx-story {
+  position: absolute; z-index: 4; right: clamp(18px, 1.95vw, 28px); top: 64px;
+  width: min(380px, 32vw); max-height: max(250px, calc(100% - 64px - 340px));
+  display: flex; flex-direction: column; overflow: hidden;
+  padding: 16px 18px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(7, 13, 24, 0.68); backdrop-filter: blur(10px);
+}
+.hx-story-title { margin: 0 0 8px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; }
+.hx-story-body {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; padding-right: 6px;
+  font-size: 13.5px; line-height: 1.65; color: rgba(255, 255, 255, 0.92);
+}
+.hx-story-body p { margin: 0 0 8px; }
+.hx-story-body p:last-child { margin-bottom: 0; }
+.hx-story-note { flex: none; margin: 10px 0 0; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.18); font-size: 11px; line-height: 1.5; color: rgba(255, 255, 255, 0.6); }
+.hx-story-note a { color: rgba(255, 255, 255, 0.85); text-decoration: underline; }
+@media (max-width: 760px) {
+  .hx-story { left: 18px; right: 18px; width: auto; top: 60px; max-height: 26vh; }
+}
+
 /* 아래 산 정보 */
 .hx-info {
   position: absolute; z-index: 4; pointer-events: none;
@@ -145,6 +166,7 @@ body {
 @media (max-width: 760px) { .hx-credit { left: 18px; } }
 
 /* 나타나는 연출 */
+.hx-story.hx-rise { animation: hx-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
 .hx-rise > * { animation: hx-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hx-rise > *:nth-child(2) { animation-delay: 0.18s; }
 .hx-rise .hx-fact { animation: hx-rise 0.72s cubic-bezier(0.22, 1, 0.36, 1) both; }

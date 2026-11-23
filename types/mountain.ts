@@ -47,6 +47,9 @@ export type Mountain = {
   countries: string[] | null; // 걸쳐 있는 나라
   source: string | null; // 출처
   asOf: string | null; // 정보 기준일 (YYYY-MM-DD)
+
+  // 산의 의미·역사 설명. 출처(원문 링크)와 기준일을 함께 가진다. 없으면 null → "정보 없음"
+  story: { text: string; source: string; asOf: string } | null;
 };
 
 // 로그인 전에도 볼 수 있는 산 정보 (PRD 4번: 루트 목록까지 공개, 세부 정보는 로그인 후)
@@ -62,6 +65,7 @@ export type PublicMountain = Pick<
   | "countries"
   | "source"
   | "asOf"
+  | "story"
 > & {
   routeCount: number;
 };

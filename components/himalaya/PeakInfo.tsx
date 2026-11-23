@@ -3,6 +3,7 @@
 // 산을 고르지 않았을 때는 제목과 안내 문구를, 고르면 큰 산 이름과 수집된 정보를 보여 준다.
 // 값이 없는 항목은 "정보 없음"으로 보여 주고, 출처와 기준일을 함께 적는다. (PRD 5번)
 
+import { Fragment } from "react";
 import Link from "next/link";
 import InfoValue from "@/components/InfoValue";
 import { t } from "@/lib/i18n/messages";
@@ -41,7 +42,33 @@ export default function PeakInfo({ mountain, onClose }: Props) {
       : t("explore.noRoutes");
 
   return (
-    <div key={mountain.slug} className="hx-info hx-rise">
+    <Fragment key={mountain.slug}>
+    {/* 오른쪽 위: 산의 의미와 역사 (위키백과 서두를 한국어로 옮긴 글, 출처 링크 포함) */}
+    <aside className="hx-story hx-rise" aria-label={t("explore.storyTitle")}>
+      <h2 className="hx-story-title">{t("explore.storyTitle")}</h2>
+      {mountain.story ? (
+        <>
+          <div className="hx-story-body">
+            {mountain.story.text.split("\n").map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
+          <p className="hx-story-note">
+            {t("explore.storyNote")}{" "}
+            <a href={mountain.story.source} target="_blank" rel="noopener noreferrer">
+              {t("explore.storySource")}
+            </a>{" "}
+            ({mountain.story.asOf})
+          </p>
+        </>
+      ) : (
+        <p className="hx-story-body">
+          <InfoValue value={null} />
+        </p>
+      )}
+    </aside>
+
+    <div className="hx-info hx-rise">
       <div>
         <h1
           className="hx-title"
@@ -95,5 +122,6 @@ export default function PeakInfo({ mountain, onClose }: Props) {
         </div>
       </div>
     </div>
+    </Fragment>
   );
 }
