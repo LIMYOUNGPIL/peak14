@@ -1,6 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import FavoriteButton from "@/components/FavoriteButton";
+import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, mountains } from "@/lib/data/mountains";
+import { toggleFavorite } from "@/lib/favorites/actions";
+import { getMyFavorites } from "@/lib/favorites/queries";
 import { toPublicRoute } from "@/lib/data/public";
 import { t } from "@/lib/i18n/messages";
 
@@ -28,6 +33,12 @@ export default async function MountainPage({
           {mountain.nameKo}
         </h1>
         <p className="text-zinc-500">{mountain.nameEn}</p>
+        {/* 로그인한 사용자에게만 즐겨찾기 버튼을 보여 준다. (산 화면은 로그인 전에도 열린다) */}
+        <div className="mt-3">
+          <Suspense fallback={null}>
+            <MountainFavorite slug={mountain.slug} />
+          </Suspense>
+        </div>
       </section>
 
       <h2 className="mb-4 text-lg font-semibold">{t("mountain.routesTitle")}</h2>
@@ -61,5 +72,20 @@ export default async function MountainPage({
         </>
       )}
     </main>
+  );
+}
+
+async function MountainFavorite({ slug }: { slug: string }) {
+  const user = await getCurrentUser();
+  if (!user) return null;
+  const isFavorite = (await getMyFavorites(user.id)).some((f) => f.mountain_slug === slug && f.route_id === null);
+  return (
+    <FavoriteButton
+      mountainSlug={slug}
+      routeId={null}
+      initial={isFavorite}
+      action={toggleFavorite}
+      text={{ add: t("favorites.add"), remove: t("favorites.remove"), limit: t("favorites.limit"), failed: t("favorites.failed") }}
+    />
   );
 }

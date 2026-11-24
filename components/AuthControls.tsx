@@ -39,6 +39,9 @@ export default async function AuthControls() {
           {profile.nickname}
         </span>
       )}
+      <Link href="/favorites" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+        {t("favorites.menu")}
+      </Link>
       <form action={logout}>
         <button type="submit" className={buttonClass}>
           {t("auth.logout")}

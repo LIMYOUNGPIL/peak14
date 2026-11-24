@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CompareButton from "@/components/CompareButton";
+import FavoriteButton from "@/components/FavoriteButton";
 import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
 import ReviewForm from "@/components/ReviewForm";
@@ -11,6 +12,8 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
 import { formatMeasure } from "@/lib/format";
 import { submitReview } from "@/lib/reviews/actions";
+import { toggleFavorite } from "@/lib/favorites/actions";
+import { getMyFavorites } from "@/lib/favorites/queries";
 import { getRouteReviews } from "@/lib/reviews/queries";
 import { t } from "@/lib/i18n/messages";
 
@@ -63,6 +66,7 @@ async function RouteDetail({
 
   // 이 루트의 후기 (로그인한 사용자만 읽을 수 있다). 올해는 서버가 정해서 화면에 넘긴다.
   const reviews = await getRouteReviews(route.id);
+  const isFavorite = (await getMyFavorites(user.id)).some((f) => f.route_id === route.id);
   const currentYear = new Date().getUTCFullYear();
 
   // 값이 없으면 InfoValue 가 "정보 없음"으로 보여 준다.
@@ -130,7 +134,14 @@ async function RouteDetail({
         {route.name}
       </h1>
 
-      <div className="mb-8 -mt-4">
+      <div className="mb-8 -mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <FavoriteButton
+          mountainSlug={mountain.slug}
+          routeId={route.id}
+          initial={isFavorite}
+          action={toggleFavorite}
+          text={{ add: t("favorites.add"), remove: t("favorites.remove"), limit: t("favorites.limit"), failed: t("favorites.failed") }}
+        />
         <CompareButton
           routeId={route.id}
           text={{
