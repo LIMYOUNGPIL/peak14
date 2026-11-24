@@ -3,13 +3,16 @@
 // 후기 등록 (서버에서 실행)
 //
 // 순서: 로그인 확인 → 입력 검사 → 욕설·개인정보 걸러내기 → 하루 등록 수 확인 → 저장.
-// 저장은 로그인한 사용자 본인의 권한으로 한다. (저장소 접근 규칙이 "본인 이름으로만, 앱 안 후기로만,
-// AI 판정은 비워서"를 한 번 더 지켜 준다.)
+//
+// 보안: 사용자가 저장소에 직접 후기를 쓰는 길은 닫혀 있다. (supabase/migrations/20261124000000_harden_writes.sql)
+// 후기는 이 서버 동작이 검사한 뒤 "서버 권한"으로만 저장한다. 작성자는 폼에서 받은 값이 아니라
+// 서버가 확인한 로그인 사용자(user.id)를 쓴다. 저장소에도 길이·형식·하루 5개 제한이 한 번 더 걸려 있다.
 
 import { after } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
+import { createAdminClient } from "@/lib/db/admin";
 import { createClient } from "@/lib/db/server";
 import { t } from "@/lib/i18n/messages";
 import { classifyAndSaveReview } from "./classify";
@@ -66,8 +69,9 @@ export async function submitReview(
   if (reasons.length > 0) return fail(t("review.blockedPrivacy"));
 
   const supabase = await createClient();
+  const admin = createAdminClient();
 
-  // 도배를 막기 위해 하루에 쓸 수 있는 후기 수를 제한한다.
+  // 도배를 막기 위해 하루에 쓸 수 있는 후기 수를 제한한다. (저장소 안에서도 한 번 더 막는다)
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const { count } = await supabase
     .from("reviews")
@@ -76,17 +80,19 @@ export async function submitReview(
     .gte("created_at", since);
   if ((count ?? 0) >= DAILY_REVIEW_LIMIT) return fail(t("review.dailyLimit"));
 
-  const { data: saved, error } = await supabase.from("reviews").insert({
+  const { data: saved, error } = await admin.from("reviews").insert({
     route_id: route.id,
     origin: "app",
-    written_year: new Date().getFullYear(),
+    // 저장소의 "미래 연도 거부" 검사와 같은 기준(UTC)으로 맞춘다.
+    written_year: new Date().getUTCFullYear(),
     // 한글이 있으면 한국어, 아니면 영어로 본다. (원문 언어 표시용)
     language: /[가-힣]/.test(body) ? "ko" : "en",
-    author_id: user.id,
+    author_id: user.id, // 서버가 확인한 로그인 사용자. 폼 값을 쓰지 않는다.
     body,
     rating,
     // sentiment 는 비워 둔다. 아래에서 AI 가 판정해 서버가 채운다.
   }).select("id").single();
+  if (error?.message.includes("review_daily_limit")) return fail(t("review.dailyLimit"));
   if (error || !saved) return fail(t("review.failed"));
 
   // 사용자를 기다리게 하지 않고, 응답을 보낸 뒤에 AI 판정을 한다.
