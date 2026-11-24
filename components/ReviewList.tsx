@@ -72,6 +72,20 @@ function ReviewCard({ review }: { review: Review }) {
               </>
             )}
             {review.linkCheckedAt && <> · {t("reviews.linkChecked", { date: review.linkCheckedAt })}</>}
+            {review.license === "CC BY-SA 4.0" && (
+              <>
+                {" · "}
+                <a
+                  href="https://creativecommons.org/licenses/by-sa/4.0/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  {t("reviews.license", { name: review.license })}
+                </a>
+                <span className="mt-1 block">{t("reviews.shareAlike")}</span>
+              </>
+            )}
           </>
         ) : (
           review.authorNickname && <span>{review.authorNickname}</span>

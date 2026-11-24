@@ -93,7 +93,9 @@
     "aiSummary": "AI가 요약한 글",
     "writer": "글쓴이: {name}",
     "sourceLink": "원문 보기",
-    "linkChecked": "링크 확인일 {date}"
+    "linkChecked": "링크 확인일 {date}",
+    "license": "라이선스 {name}",
+    "shareAlike": "이 요약은 원문과 같은 라이선스(CC BY-SA 4.0)로 제공되며, 원문의 일부를 AI가 줄여 옮긴 것입니다."
   },
   "review": {
     "writeTitle": "후기 쓰기",

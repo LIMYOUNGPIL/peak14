@@ -30,6 +30,7 @@ export type Review = {
   authorName: string | null; // 글쓴이 표기 (프로필 정보는 저장하지 않는다)
   originalUrl: string | null; // 원문 링크
   linkCheckedAt: string | null; // 원문 링크를 마지막으로 확인한 날 (YYYY-MM-DD)
+  license: string | null; // 원문 라이선스 (예: CC BY-SA 4.0)
 };
 
 // 즐겨찾기: 로그인한 사용자가 산 또는 루트를 저장

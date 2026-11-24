@@ -29,6 +29,7 @@ function review(partial: Partial<Review>): Review {
     authorName: null,
     originalUrl: null,
     linkCheckedAt: null,
+    license: null,
     ...partial,
   };
 }

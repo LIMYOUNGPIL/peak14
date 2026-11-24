@@ -77,14 +77,14 @@ isOneToOne: false
                   ]
                 },"reviews": {
                   Row: {
-                    "author_id": string | null,"author_name": string | null,"body": string | null,"created_at": string,"id": string,"language": string,"link_checked_at": string | null,"origin": string,"original_url": string | null,"rating": number | null,"route_id": string,"sentiment": string | null,"summary_en": string | null,"summary_ko": string | null,"written_year": number
+                    "author_id": string | null,"author_name": string | null,"body": string | null,"created_at": string,"id": string,"language": string,"license": string | null,"link_checked_at": string | null,"origin": string,"original_url": string | null,"rating": number | null,"route_id": string,"sentiment": string | null,"summary_en": string | null,"summary_ko": string | null,"written_year": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "author_id"?: string | null,"author_name"?: string | null,"body"?: string | null,"created_at"?: string,"id"?: string,"language": string,"link_checked_at"?: string | null,"origin": string,"original_url"?: string | null,"rating"?: number | null,"route_id": string,"sentiment"?: string | null,"summary_en"?: string | null,"summary_ko"?: string | null,"written_year": number
+                    "author_id"?: string | null,"author_name"?: string | null,"body"?: string | null,"created_at"?: string,"id"?: string,"language": string,"license"?: string | null,"link_checked_at"?: string | null,"origin": string,"original_url"?: string | null,"rating"?: number | null,"route_id": string,"sentiment"?: string | null,"summary_en"?: string | null,"summary_ko"?: string | null,"written_year": number
                   }
                   Update: {
-                    "author_id"?: string | null,"author_name"?: string | null,"body"?: string | null,"created_at"?: string,"id"?: string,"language"?: string,"link_checked_at"?: string | null,"origin"?: string,"original_url"?: string | null,"rating"?: number | null,"route_id"?: string,"sentiment"?: string | null,"summary_en"?: string | null,"summary_ko"?: string | null,"written_year"?: number
+                    "author_id"?: string | null,"author_name"?: string | null,"body"?: string | null,"created_at"?: string,"id"?: string,"language"?: string,"license"?: string | null,"link_checked_at"?: string | null,"origin"?: string,"original_url"?: string | null,"rating"?: number | null,"route_id"?: string,"sentiment"?: string | null,"summary_en"?: string | null,"summary_ko"?: string | null,"written_year"?: number
                   }
                   Relationships: [
                     
