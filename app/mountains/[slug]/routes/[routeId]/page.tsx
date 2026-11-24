@@ -6,6 +6,7 @@ import CompareButton from "@/components/CompareButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
+import ShareButton from "@/components/ShareButton";
 import ReviewForm from "@/components/ReviewForm";
 import ReviewList from "@/components/ReviewList";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -142,6 +143,7 @@ async function RouteDetail({
           action={toggleFavorite}
           text={{ add: t("favorites.add"), remove: t("favorites.remove"), limit: t("favorites.limit"), failed: t("favorites.failed") }}
         />
+        <ShareButton label={t("share.button")} title={route.name} copied={t("share.copied")} failed={t("share.failed")} />
         <CompareButton
           routeId={route.id}
           text={{

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ShareButton from "@/components/ShareButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, mountains } from "@/lib/data/mountains";
@@ -34,7 +35,8 @@ export default async function MountainPage({
         </h1>
         <p className="text-zinc-500">{mountain.nameEn}</p>
         {/* 로그인한 사용자에게만 즐겨찾기 버튼을 보여 준다. (산 화면은 로그인 전에도 열린다) */}
-        <div className="mt-3">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <ShareButton label={t("share.button")} title={mountain.nameKo} copied={t("share.copied")} failed={t("share.failed")} />
           <Suspense fallback={null}>
             <MountainFavorite slug={mountain.slug} />
           </Suspense>
