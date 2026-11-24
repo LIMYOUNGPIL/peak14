@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
 import type { Metadata } from "next";
 import TakedownForm from "@/components/TakedownForm";
 import { submitTakedown } from "@/lib/takedown/actions";
@@ -20,6 +21,9 @@ async function TakedownContent() {
     <main className="mx-auto w-full max-w-xl flex-1 px-6 py-12">
       <h1 className="mb-2 text-2xl font-bold">{t("takedown.title")}</h1>
       <p className="mb-6 text-sm leading-6 text-zinc-600 dark:text-zinc-400">{t("takedown.intro")}</p>
+      <p className="mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+        {t("takedown.contact")} <a href={`mailto:${CONTACT_EMAIL}`} className="underline">{CONTACT_EMAIL}</a>
+      </p>
       <TakedownForm
         action={submitTakedown}
         text={{

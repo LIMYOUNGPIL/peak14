@@ -174,7 +174,8 @@
     "invalidEmail": "Please enter a valid email address.",
     "limit": "You have reached today's limit for requests. Please try again tomorrow.",
     "failed": "Could not receive your request. Please try again in a moment.",
-    "footerLink": "Request removal of an external article"
+    "footerLink": "Request removal of an external article",
+    "contact": "Contact / takedown email:"
   },
   "compare": {
     "title": "Compare routes",

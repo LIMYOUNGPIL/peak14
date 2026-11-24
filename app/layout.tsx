@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import Header from "@/components/Header";
 import { getT } from "@/lib/i18n/server";
 import { Suspense } from "react";
@@ -45,6 +46,9 @@ async function Footer() {
   return (
     <footer className="border-t border-black/10 px-6 py-4 text-center text-xs text-zinc-500 dark:border-white/15">
       <Link href="/takedown" className="underline">{t("takedown.footerLink")}</Link>
+      <span className="mx-2">·</span>
+      <span>{t("takedown.contact")} </span>
+      <a href={`mailto:${CONTACT_EMAIL}`} className="underline">{CONTACT_EMAIL}</a>
     </footer>
   );
 }
