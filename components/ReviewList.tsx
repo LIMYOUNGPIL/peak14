@@ -18,6 +18,7 @@ import type { Review } from "@/types/review";
 
 type Props = {
   reviews: Review[];
+  loadFailed?: boolean; // 후기를 읽지 못함 ("후기 없음"과 구분해 알린다)
   locale: Locale;
   currentYear: number; // 서버가 정한 올해 (서버와 화면의 계산이 어긋나지 않도록 넘겨받는다)
 };
@@ -74,7 +75,12 @@ function ReviewCard({ review, locale }: { review: Review; locale: Locale }) {
                 </a>
               </>
             )}
-            {review.linkCheckedAt && <> · {t("reviews.linkChecked", { date: review.linkCheckedAt })}</>}
+            {review.linkFailedAt && (
+              <span className="mt-1 block text-amber-700 dark:text-amber-300">
+                {t("reviews.linkBroken", { date: review.linkFailedAt })}
+              </span>
+            )}
+            {review.linkCheckedAt && !review.linkFailedAt && <> · {t("reviews.linkChecked", { date: review.linkCheckedAt })}</>}
             {review.license === "CC BY-SA 4.0" && (
               <>
                 {" · "}
@@ -127,7 +133,7 @@ function Column({
   );
 }
 
-export default function ReviewList({ reviews, currentYear, locale }: Props) {
+export default function ReviewList({ reviews, loadFailed = false, currentYear, locale }: Props) {
   const t = makeT(locale);
   const [presses, setPresses] = useState(0); // "더보기"를 누른 횟수
   const [includeOld, setIncludeOld] = useState(false); // 5년 지난 후기 보기
@@ -143,7 +149,11 @@ export default function ReviewList({ reviews, currentYear, locale }: Props) {
       <h2 className="mb-1 text-lg font-semibold">{t("reviews.title")}</h2>
       <p className="mb-4 text-xs text-zinc-500">{t("reviews.aiNote")}</p>
 
-      {totalVisible === 0 ? (
+      {loadFailed ? (
+        <p role="alert" className="rounded-xl border border-dashed border-red-500/40 p-5 text-zinc-700 dark:text-zinc-300">
+          {t("reviews.loadFailed")}
+        </p>
+      ) : totalVisible === 0 ? (
         <p className="rounded-xl border border-dashed border-black/20 p-5 text-zinc-600 dark:border-white/20 dark:text-zinc-400">
           {t("reviews.none")}
         </p>

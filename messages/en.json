@@ -78,6 +78,7 @@
     "noPositive": "No positive reviews",
     "noNegative": "No negative reviews",
     "none": "There are no reviews yet.",
+    "loadFailed": "Could not load reviews. Please try again later. (This does not mean there are no reviews.)",
     "more": "Show more",
     "showOld": "Show older reviews ({count})",
     "hideOld": "Hide older reviews",
@@ -95,6 +96,7 @@
     "writer": "Author: {name}",
     "sourceLink": "View original",
     "linkChecked": "Link checked {date}",
+    "linkBroken": "The original could not be verified (checked {date}). The link did not open, so only the summary remains.",
     "license": "License {name}",
     "shareAlike": "This summary is provided under the same license as the original (CC BY-SA 4.0) and is a shortened rewording of part of the original made by AI."
   },

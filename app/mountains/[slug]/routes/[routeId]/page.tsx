@@ -223,7 +223,7 @@ async function RouteDetail({
       </section>
 
       {/* 후기 목록: 긍정·부정 대표 후기와 더보기, 중립·판정 중 구역, 5년 지난 후기 숨김 */}
-      <ReviewList reviews={reviews} currentYear={currentYear} locale={locale} />
+      <ReviewList reviews={reviews ?? []} loadFailed={reviews === null} currentYear={currentYear} locale={locale} />
 
       {/* 후기 쓰기: 로그인한 사용자만 이 화면에 들어올 수 있다. */}
       <section className="mt-10">

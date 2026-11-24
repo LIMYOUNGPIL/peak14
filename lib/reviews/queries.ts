@@ -8,7 +8,8 @@ import { createClient } from "@/lib/db/server";
 import type { Review } from "@/types/review";
 import { mapReviewRow } from "./map";
 
-export async function getRouteReviews(routeId: string): Promise<Review[]> {
+// 읽기에 실패하면 null 을 돌려준다. (후기가 없는 것과 구분해, 화면이 "불러오지 못했습니다"로 정직하게 알린다)
+export async function getRouteReviews(routeId: string): Promise<Review[] | null> {
   const supabase = await createClient();
 
   const { data: rows, error } = await supabase
@@ -17,7 +18,7 @@ export async function getRouteReviews(routeId: string): Promise<Review[]> {
     .eq("route_id", routeId)
     .order("written_year", { ascending: false })
     .order("created_at", { ascending: false });
-  if (error || !rows) return [];
+  if (error || !rows) return null;
 
   // 앱 안 후기의 작성자 닉네임을 한 번에 읽는다. (이메일은 읽지 않는다)
   const authorIds = [...new Set(rows.flatMap((r) => (r.author_id ? [r.author_id] : [])))];

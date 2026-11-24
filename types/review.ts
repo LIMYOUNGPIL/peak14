@@ -29,6 +29,7 @@ export type Review = {
   // 외부 글에만 있는 값
   authorName: string | null; // 글쓴이 표기 (프로필 정보는 저장하지 않는다)
   originalUrl: string | null; // 원문 링크
+  linkFailedAt: string | null; // 원문 링크가 열리지 않은 것으로 확인된 날. 있으면 "원문을 확인할 수 없습니다"를 띄운다
   linkCheckedAt: string | null; // 원문 링크를 마지막으로 확인한 날 (YYYY-MM-DD)
   license: string | null; // 원문 라이선스 (예: CC BY-SA 4.0)
 };

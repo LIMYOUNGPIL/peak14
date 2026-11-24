@@ -27,6 +27,7 @@ export function mapReviewRow(row: ReviewRow, nickname: string | null): Review {
     authorName: row.author_name,
     originalUrl: row.original_url,
     linkCheckedAt: row.link_checked_at,
+    linkFailedAt: row.link_failed_at,
     license: row.license,
   };
 }

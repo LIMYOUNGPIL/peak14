@@ -2,7 +2,7 @@
 //
 // 실행: npm run links:check
 // 저장된 외부 요약의 원문 주소(글 단위)를 열어 보고, 열리면 "링크 확인일"을 오늘로 바꾼다.
-// 열리지 않으면(404·410 등) 목록으로 알려 준다. 자동으로 지우지는 않는다. (일시 오류일 수 있어 사람이 판단)
+// 열리지 않으면(404·410 등) 목록으로 알리고 화면에 "원문을 확인할 수 없습니다"가 뜨게 표시한다. 자동으로 지우지는 않는다. (일시 오류일 수 있어 사람이 판단)
 
 import fs from "node:fs";
 import path from "node:path";
@@ -37,9 +37,13 @@ for (const [page, ids] of byPage) {
     status = res.status;
   } catch { status = 0; }
   if (status >= 200 && status < 300) {
-    await admin.from("reviews").update({ link_checked_at: today }).in("id", ids);
+    await admin.from("reviews").update({ link_checked_at: today, link_failed_at: null }).in("id", ids);
     ok++;
-  } else broken.push(`${page} (상태 ${status || "연결 실패"}, 요약 ${ids.length}건)`);
+  } else {
+    // 화면에 "원문을 확인할 수 없습니다"를 띄운다. (요약은 지우지 않는다. 지우는 건 사람이 판단)
+    await admin.from("reviews").update({ link_failed_at: today }).in("id", ids);
+    broken.push(`${page} (상태 ${status || "연결 실패"}, 요약 ${ids.length}건)`);
+  }
 }
 console.log(`확인한 글 ${byPage.size}개 → 열림 ${ok}개, 문제 ${broken.length}개`);
 for (const b of broken) console.log("  확인 필요 ->", b);
