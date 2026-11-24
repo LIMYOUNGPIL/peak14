@@ -10,7 +10,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ComponentRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { makeFrame, sampleElevation, type Frame } from "./geo";
 import type { TerrainData } from "./terrain";
@@ -40,7 +40,7 @@ type Props = {
   onIntroDone: () => void;
 };
 
-const FOG = "#5d5a8a"; // 먼 지형이 노을빛 하늘로 녹아드는 색
+const BACKGROUND = "#070d18";
 const HOME_TARGET = new THREE.Vector3(0, 0, -0.4);
 const HOME_DISTANCE = 16;
 const HOME_DIRECTION = new THREE.Vector3(0, 0.7, 0.714).normalize();
@@ -124,7 +124,7 @@ function Terrain({
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         const d = Math.min(x, size - 1 - x, y, size - 1 - y) / size;
-        const t = Math.min(1, Math.max(0, d / 0.09));
+        const t = Math.min(1, Math.max(0, d / 0.16));
         const a = Math.round(255 * t * t * (3 - 2 * t));
         const o = (y * size + x) * 4;
         data[o] = data[o + 1] = data[o + 2] = a;
@@ -175,7 +175,7 @@ function PeakMarker({
 }) {
   const ring = useRef<THREE.Mesh>(null);
   const phase = peak.number * 0.9;
-  const color = selected ? "#ffcf9a" : "#fff0ec";
+  const color = selected ? "#ffb454" : "#e9f1ff";
 
   useFrame(({ clock }) => {
     if (!ring.current) return;
@@ -395,11 +395,11 @@ function World({
 
   return (
     <>
-      {/* 배경은 화면(CSS)의 노을빛 그라데이션이 맡는다. 3D 는 투명하게 그린다. */}
-      <fog attach="fog" args={[FOG, 21, 64]} />
-      <hemisphereLight args={["#c9c6f0", "#6a4e5c", 0.85]} />
-      <directionalLight position={[-10, 3.6, 7]} intensity={3.4} color="#ffc79c" />
-      <directionalLight position={[8, 6, -6]} intensity={0.7} color="#a9b4ff" />
+      {/* 배경색은 화면(CSS)이 칠하고 3D 는 투명하게 그린다. 먼 지형은 같은 색 안개 속으로 사라진다. */}
+      <fog attach="fog" args={[BACKGROUND, 22, 70]} />
+      <hemisphereLight args={["#9db7e0", "#3b3128", 0.85]} />
+      <directionalLight position={[-9, 5.5, 8]} intensity={2.9} color="#ffd9b0" />
+      <Stars radius={140} depth={40} count={1800} factor={4} saturation={0} fade speed={0.4} />
 
       <Terrain terrain={terrain} frame={frame} stride={coarsePointer ? 2 : 1} />
       {peaks.map((p, idx) => (

@@ -16,7 +16,7 @@ export default async function Header() {
   const locale = await getLocale();
   const t = makeT(locale);
   return (
-    <header className="border-b border-[#f6b9b3]/20 bg-[#0d1226]/90 text-white backdrop-blur">
+    <header className="border-b border-white/15 bg-[#070d18]/90 text-white backdrop-blur">
       <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
         <Link href="/" className="text-lg font-bold tracking-tight">
           {t("common.siteName")}

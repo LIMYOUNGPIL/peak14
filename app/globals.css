@@ -1,14 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  /* 새벽 노을빛 디자인 값: 첫 화면과 루트 화면(이미지·고도 그래프)이 같은 색을 쓴다 */
-  --dawn-top: #1a2347;
-  --dawn-mid: #5a5688;
-  --dawn-glow: #e9a79f;
-  --dawn-pink: #f6b9b3;
-  --dawn-gold: #ffcf9a;
-  --glass: rgba(24, 28, 58, 0.55);
-  --glass-line: rgba(255, 214, 205, 0.28);
+  /* 밤하늘 디자인 값: 첫 화면과 루트 화면(이미지·고도 그래프)이 같은 색을 쓴다 */
+  --night-top: #0a1424;
+  --night-bottom: #070d18;
+  --accent: #ffb454;
+  --glass: rgba(10, 16, 26, 0.58);
+  --glass-line: rgba(255, 255, 255, 0.28);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
   --background: #ffffff;
   --foreground: #171717;
@@ -42,13 +40,13 @@ body {
   flex: 1 1 auto;
   min-height: 520px;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--dawn-glow) 0%, #b08aa4 9%, var(--dawn-mid) 24%, var(--dawn-top) 62%, #0d1226 100%);
+  background: radial-gradient(ellipse 90% 70% at 50% 28%, #0f1c33 0%, var(--night-bottom) 70%);
   color: #fff;
 }
 .hx-scene { position: absolute; inset: 0; z-index: 0; }
 .hx-shade {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background: linear-gradient(to bottom, transparent 50%, rgba(12, 16, 38, 0.9) 100%);
+  background: linear-gradient(to bottom, transparent 52%, rgba(4, 8, 14, 0.88) 100%);
 }
 @media (pointer: fine) {
   .hx-fine-cursor, .hx-fine-cursor * { cursor: none !important; }
@@ -69,8 +67,8 @@ body {
   color: #fff; font-size: 13px; line-height: 1.2; white-space: nowrap;
   cursor: pointer; transition: background 0.2s, color 0.2s;
 }
-.hx-label:hover { background: rgba(246, 185, 179, 0.38); }
-.hx-label.is-selected { background: var(--dawn-pink); color: #2a1830; border-color: var(--dawn-pink); font-weight: 700; }
+.hx-label:hover { background: rgba(255, 255, 255, 0.28); }
+.hx-label.is-selected { background: #fff; color: #000; border-color: #fff; font-weight: 700; }
 .hx-label-no { font-size: 11px; opacity: 0.6; }
 .hx-label.is-compact .hx-label-name { display: none; }
 .hx-label.is-compact:hover .hx-label-name { display: inline; }
@@ -79,9 +77,9 @@ body {
 
 /* 왼쪽 14좌 목록 */
 .hx-list {
-  position: absolute; z-index: 4; left: clamp(18px, 1.95vw, 28px); top: 46%;
+  position: absolute; z-index: 4; left: clamp(18px, 1.95vw, 28px); top: calc(50% - 78px);
   transform: translateY(-50%); display: flex; flex-direction: column; gap: 3px;
-  font-size: 14px; max-height: calc(100% - 300px); overflow: auto;
+  font-size: 14px; max-height: calc(100% - 290px); overflow: auto;
   animation: hx-side 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
 }
 .hx-list-item {
@@ -92,7 +90,7 @@ body {
 .hx-list-item:hover { color: #fff; }
 .hx-list-item.is-active { color: #fff; font-size: 16px; font-weight: 700; }
 .hx-list-item.is-active::before {
-  content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--dawn-pink); flex: none;
+  content: ""; width: 12px; height: 12px; border-radius: 50%; background: #fff; flex: none;
 }
 .hx-list-no { width: 18px; font-size: 11px; opacity: 0.5; flex: none; }
 .hx-list-item.is-active .hx-list-no { display: none; }
@@ -139,7 +137,7 @@ body {
 }
 .hx-title {
   margin: 0; font-family: var(--serif);
-  font-weight: 400; line-height: 0.9; letter-spacing: 0.02em; text-shadow: 0 6px 40px rgba(20, 16, 50, 0.5);
+  font-weight: 400; line-height: 0.9; letter-spacing: 0.02em; text-shadow: 0 6px 40px rgba(0, 0, 0, 0.45);
   font-size: clamp(34px, 10.5vw, 160px); text-transform: uppercase; white-space: nowrap;
 }
 .hx-subtitle { margin: 12px 0 0; font-size: 16px; opacity: 0.85; }
@@ -158,7 +156,7 @@ body {
   padding: 9px 18px; border-radius: 999px; font-size: 14px; line-height: 1; cursor: pointer;
   text-decoration: none; transition: background 0.2s, color 0.2s;
 }
-.hx-primary { background: linear-gradient(180deg, #fff, #fbe4e0); color: #2a1830; border: 1px solid #fff; box-shadow: 0 8px 28px rgba(246, 185, 179, 0.35); }
+.hx-primary { background: #fff; color: #000; border: 1px solid #fff; }
 .hx-primary:hover { background: rgba(255, 255, 255, 0.85); }
 .hx-secondary { background: transparent; color: #fff; border: 1px solid var(--glass-line); }
 .hx-secondary:hover { background: rgba(255, 255, 255, 0.15); }

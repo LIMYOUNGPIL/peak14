@@ -1,6 +1,6 @@
 // 루트 한눈에 보기: 산 위치 지도 + 고도 그래프 (PLAN 20번)
 //
-// 첫 화면(3D)과 같은 "새벽 노을빛" 색을 쓴다. (app/globals.css 의 --dawn-* 값)
+// 첫 화면(3D)과 같은 밤하늘 색을 쓴다. (app/globals.css 의 --night-*, --accent 값)
 // 규칙: 등록된 값과 다르게 그리지 않는다. 지점이 2개 미만이면 그래프 대신 "정보 없음"을 보여 준다.
 //  - 지도: 3D 지형을 만든 색 이미지(public/terrain)에서 산 둘레를 잘라 보여 준다. 위성 사진이 아니다.
 //  - 그래프: 출처에 고도가 적힌 지점만 걷는 순서대로 잇는다. 지점 사이 거리는 자료에 없어 같은 간격으로 놓는다.
@@ -61,8 +61,8 @@ function Chart({ route, locale }: { route: Route; locale: Locale }) {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" className="w-full" aria-label={t("visual.chartTitle")}>
         <defs>
           <linearGradient id="rv-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#f6b9b3" stopOpacity=".55" />
-            <stop offset="1" stopColor="#f6b9b3" stopOpacity="0" />
+            <stop offset="0" stopColor="#ffb454" stopOpacity=".55" />
+            <stop offset="1" stopColor="#ffb454" stopOpacity="0" />
           </linearGradient>
         </defs>
         {ticks.map((tk) => (
@@ -72,15 +72,15 @@ function Chart({ route, locale }: { route: Route; locale: Locale }) {
           </g>
         ))}
         <path d={area} fill="url(#rv-area)" />
-        <path d={line} fill="none" stroke="#ffcf9a" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={line} fill="none" stroke="#ffb454" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
         {pts.map((p, i) => {
           const above = i % 2 === 0 || i === pts.length - 1 ? true : false;
           const name = locale === "en" ? p.nameEn : p.name;
           return (
             <g key={p.name}>
-              <circle cx={x(i)} cy={y(p.elevationM)} r="5" fill="#fff" stroke="#ffcf9a" strokeWidth="2.5" />
+              <circle cx={x(i)} cy={y(p.elevationM)} r="5" fill="#fff" stroke="#ffb454" strokeWidth="2.5" />
               <text x={x(i)} y={y(p.elevationM) + (above ? -26 : 30)} textAnchor="middle" fontSize="12.5" fontWeight="600" fill="#fff">{name}</text>
-              <text x={x(i)} y={y(p.elevationM) + (above ? -11 : 45)} textAnchor="middle" fontSize="11.5" fill="#ffd9d3">{t("visual.meters", { n: fmt(p.elevationM) })}</text>
+              <text x={x(i)} y={y(p.elevationM) + (above ? -11 : 45)} textAnchor="middle" fontSize="11.5" fill="#ffe2bd">{t("visual.meters", { n: fmt(p.elevationM) })}</text>
             </g>
           );
         })}
@@ -104,7 +104,7 @@ export default function RouteVisual({ mountain, route, locale }: { mountain: Mou
     <section
       aria-label={t("visual.title")}
       className="mb-8 overflow-hidden rounded-3xl border p-5 text-white sm:p-6"
-      style={{ background: "linear-gradient(180deg, var(--dawn-mid) 0%, var(--dawn-top) 100%)", borderColor: "var(--glass-line)" }}
+      style={{ background: "linear-gradient(180deg, #101c30 0%, var(--night-bottom) 100%)", borderColor: "var(--glass-line)" }}
     >
       <h2 className="mb-4 text-lg font-semibold" style={{ fontFamily: "var(--serif)" }}>{t("visual.title")}</h2>
       <div className="grid gap-6 md:grid-cols-[minmax(0,260px)_1fr]">
@@ -112,7 +112,7 @@ export default function RouteVisual({ mountain, route, locale }: { mountain: Mou
           <h3 className="mb-2 text-sm font-semibold text-white/85">{t("visual.mapTitle")}</h3>
           {loc ? (
             <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/25" style={loc.background} role="img" aria-label={`${t("visual.mapTitle")}: ${locale === "en" ? mountain.nameEn : mountain.nameKo}`}>
-              <span className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#ffcf9a] shadow-[0_0_0_6px_rgba(255,207,154,.28)]" style={{ left: `${loc.dotX}%`, top: `${loc.dotY}%` }} />
+              <span className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#ffb454] shadow-[0_0_0_6px_rgba(255,180,84,.28)]" style={{ left: `${loc.dotX}%`, top: `${loc.dotY}%` }} />
               <span className="absolute -translate-x-1/2 text-[11px] font-semibold text-white [text-shadow:0_1px_6px_rgba(10,10,40,.9)]" style={{ left: `${loc.dotX}%`, top: `calc(${loc.dotY}% + 12px)` }}>
                 {locale === "en" ? mountain.nameEn : mountain.nameKo}
               </span>
