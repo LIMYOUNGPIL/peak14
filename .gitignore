@@ -45,3 +45,10 @@ next-env.d.ts
 
 # 지형 타일 내려받기 임시 보관
 /scripts/.terrain-cache/
+
+# 예시 파일은 올린다
+!.env.example
+
+# 도구 작업 폴더
+/.bkit/
+/.claude/

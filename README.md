@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Peak14
 
-## Getting Started
+히말라야 14좌(8,000m 봉우리)의 **트레킹 루트 정보, 안전 유의사항, 긍정·부정·중립 후기**를 한곳에서 보여 주는 웹 앱입니다.
+해외 트레킹을 준비하는 예비 트레커(초보자와 경험자)가 흩어진 정보를 일일이 맞춰 보지 않고, 루트를 비교하며 안전 준비를 할 수 있게 만들었습니다.
 
-First, run the development server:
+- 기획서: [PRD.md](PRD.md) · 작업 계획: [PLAN.md](PLAN.md) · 설계: [DESIGN.md](DESIGN.md)
+- 작성자: 임영필
+
+## 주요 기능
+
+- **3D 히말라야 전경 첫 화면**: 실제 고도 자료로 만든 지형을 돌리고(드래그), 확대·축소하고, 옮겨 보며(오른쪽 버튼·두 손가락·방향키) 산을 눌러 정보를 봅니다.
+- **14좌·루트 상세**: 거리, 소요 시간, 숙소 수, 편의시설, 난이도(별 1~5)를 출처·기준일과 함께 표시합니다. 값을 모르면 "정보 없음"으로 보여 줍니다.
+- **안전 유의사항**: 공식 자료로 등록한 것만 보여 줍니다(영어 원문 + 참고용 한국어 번역). 로그인 전에는 내용을 가리고 등록 건수만 알립니다.
+- **긍정·부정 후기를 나란히**: 대표 후기, 더보기, 중립 후기, 5년 지난 후기 숨김. 한쪽이 없으면 "없음"으로 표시합니다.
+- **외부 글 요약**: 위키보야지(CC BY-SA 4.0) 글을 AI가 요약하고, 글쓴이·원문 링크·"AI가 만든 결과"를 함께 표시합니다. 삭제 요청 접수 양식이 있습니다.
+- **루트 비교(2개), 즐겨찾기, 공유하기**, **한국어·영어 선택**, 루트 위치 지도와 고도 그래프.
+- 이메일·구글 로그인, 후기 작성(별점, 욕설·개인정보 필터, AI 긍정/부정/중립 판정).
+
+## 지키는 원칙
+
+- 추측해서 채우지 않습니다. 모르는 값은 "정보 없음"입니다.
+- 모든 정보에 출처와 기준일을 표시합니다.
+- 안전 유의사항은 AI가 만들거나 바꾸지 않습니다.
+- 외부 글은 원문 전체를 복사하지 않고, 요약·글쓴이·원문 링크만 씁니다.
+- "이 루트는 안전하다" 같은 보증을 하지 않습니다.
+- 3D 지형은 세로 방향을 7배 과장했고, 색은 고도·경사로 계산한 것입니다(위성 사진이 아님). 화면에 밝혀 두었습니다.
+
+만들지 않는 것: 예약·결제, 실시간 날씨·GPS·길 안내, 커뮤니티 기능, 네이티브 앱, 관리자 대시보드.
+
+## 기술 스택
+
+Next.js 16 (App Router) · TypeScript · Tailwind CSS · Supabase(로그인·데이터 저장) · three.js / react-three-fiber(3D) · OpenAI API(후기 판정·외부 글 요약) · Vercel(배포)
+
+## 직접 실행하기
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env   # 값을 채웁니다 (아래 환경 변수 참고)
+npm run dev            # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+npm run lint   # 코드 검사
+npm test       # 규칙 시험
+npm run build  # 배포용 빌드
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 환경 변수
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| 이름 | 용도 | 공개 여부 |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 주소 | 공개돼도 됨 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase 공개용 키 | 공개돼도 됨 |
+| `SUPABASE_SERVICE_ROLE_KEY` | 서버 전용 관리 키 | **비밀** |
+| `OPENAI_API_KEY` | 후기 판정·요약용 | **비밀** |
 
-## Learn More
+비밀 값은 `.env`에만 두며 저장소에 올리지 않습니다.
 
-To learn more about Next.js, take a look at the following resources:
+## 폴더
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `app/` 화면, `components/` 화면 조각(3D 포함), `lib/` 데이터·규칙·인증·AI, `messages/` 한국어·영어 문구
+- `supabase/migrations/` 데이터베이스 구조, `scripts/` 자료 수집·점검 스크립트, `tests/` 시험
+- `public/terrain/` 3D 지형 자료(미국 3DEP·GMTED2010·SRTM 고도 자료로 만듦)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 라이선스·출처
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+외부 글 요약은 위키보야지(CC BY-SA 4.0)를 출처로 하며, 같은 조건으로 공유됩니다. 고도 자료의 출처는 앱 첫 화면 하단에 적혀 있습니다.
