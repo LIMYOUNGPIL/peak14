@@ -1,9 +1,19 @@
 // 없는 주소를 열었을 때 보이는 화면 (DESIGN 7번: 404 화면, 목록으로 돌아가는 링크)
 
 import Link from "next/link";
-import { t } from "@/lib/i18n/messages";
+import { Suspense } from "react";
+import { getT } from "@/lib/i18n/server";
 
 export default function NotFound() {
+  return (
+    <Suspense fallback={null}>
+      <NotFoundBody />
+    </Suspense>
+  );
+}
+
+async function NotFoundBody() {
+  const t = await getT();
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-start justify-center px-6 py-16">
       <p className="text-sm text-zinc-500">404</p>

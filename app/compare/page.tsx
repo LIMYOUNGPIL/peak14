@@ -7,15 +7,17 @@ import InfoValue from "@/components/InfoValue";
 import { getCurrentUser } from "@/lib/auth/session";
 import { findRoute } from "@/lib/data/mountains";
 import { formatMeasure } from "@/lib/format";
-import { t } from "@/lib/i18n/messages";
+import { makeT, type Locale } from "@/lib/i18n/messages";
+import { getLocale } from "@/lib/i18n/server";
+import { mountainName, routeName, sourceText } from "@/lib/i18n/names";
 import type { Route } from "@/types/mountain";
 
-export const metadata: Metadata = { title: `${t("compare.title")} · ${t("common.siteName")}` };
+export const metadata: Metadata = { title: "Peak14" };
 
 export default function ComparePage({ searchParams }: PageProps<"/compare">) {
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
-      <Suspense fallback={<p className="text-zinc-500">{t("common.loading")}</p>}>
+      <Suspense fallback={null}>
         <Compare searchParams={searchParams} />
       </Suspense>
     </main>
@@ -23,16 +25,17 @@ export default function ComparePage({ searchParams }: PageProps<"/compare">) {
 }
 
 // 난이도·값 칸을 같은 모양으로 그린다. 값이 없으면 "정보 없음". 어느 쪽이 낫다고 강조하지 않는다.
-function cells(route: Route): ReactNode[] {
+function cells(route: Route, locale: Locale): ReactNode[] {
+  const t = makeT(locale);
   return [
-    <InfoValue key="d" value={formatMeasure(route.distanceKm)} unit={t("route.unitKm")} />,
-    <InfoValue key="t" value={formatMeasure(route.durationDays)} unit={t("route.unitDays")} />,
-    <InfoValue key="l" value={route.lodgingCount} unit={t("route.unitPlaces")} />,
-    <InfoValue key="a" value={route.amenities?.join(", ")} />,
+    <InfoValue locale={locale} key="d" value={formatMeasure(route.distanceKm)} unit={t("route.unitKm")} />,
+    <InfoValue locale={locale} key="t" value={formatMeasure(route.durationDays)} unit={t("route.unitDays")} />,
+    <InfoValue locale={locale} key="l" value={route.lodgingCount} unit={t("route.unitPlaces")} />,
+    <InfoValue locale={locale} key="a" value={route.amenities?.join(", ")} />,
     <span key="f" className="flex flex-col gap-0.5">
-      <InfoValue value={route.difficulty === null ? null : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty)} />
+      <InfoValue locale={locale} value={route.difficulty === null ? null : "★".repeat(route.difficulty) + "☆".repeat(5 - route.difficulty)} />
       {route.difficulty !== null && (
-        <span className="text-xs text-zinc-500">{t("route.difficultyBasis")}: <InfoValue value={route.difficultySource} /> · {t("route.asOf")}: <InfoValue value={route.difficultyAsOf} /></span>
+        <span className="text-xs text-zinc-500">{t("route.difficultyBasis")}: <InfoValue locale={locale} value={sourceText(route.difficultySource, locale)} /> · {t("route.asOf")}: <InfoValue locale={locale} value={route.difficultyAsOf} /></span>
       )}
     </span>,
     <span key="s">{route.safetyNotes.length > 0 ? t("compare.safetyCount", { count: route.safetyNotes.length }) : t("gate.safetyNone")}</span>,
@@ -40,6 +43,8 @@ function cells(route: Route): ReactNode[] {
 }
 
 async function Compare({ searchParams }: { searchParams: PageProps<"/compare">["searchParams"] }) {
+  const locale = await getLocale();
+  const t = makeT(locale);
   const { a, b } = await searchParams;
   const idA = typeof a === "string" ? a : "";
   const idB = typeof b === "string" ? b : "";
@@ -62,8 +67,8 @@ async function Compare({ searchParams }: { searchParams: PageProps<"/compare">["
   }
 
   const labels = [t("route.distance"), t("route.duration"), t("route.lodging"), t("route.amenities"), t("route.difficulty"), t("compare.safety")];
-  const l = cells(left.route);
-  const r = cells(right.route);
+  const l = cells(left.route, locale);
+  const r = cells(right.route, locale);
 
   return (
     <>
@@ -76,8 +81,8 @@ async function Compare({ searchParams }: { searchParams: PageProps<"/compare">["
               <th className="w-28 px-4 py-3" />
               {[left, right].map(({ mountain, route }) => (
                 <th key={route.id} className="px-4 py-3 align-top font-semibold">
-                  <Link href={`/mountains/${mountain.slug}/routes/${route.id}`} className="hover:underline">{route.name}</Link>
-                  <span className="block text-xs font-normal text-zinc-500">{mountain.nameKo}</span>
+                  <Link href={`/mountains/${mountain.slug}/routes/${route.id}`} className="hover:underline">{routeName(route, locale)}</Link>
+                  <span className="block text-xs font-normal text-zinc-500">{mountainName(mountain, locale)}</span>
                 </th>
               ))}
             </tr>

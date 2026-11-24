@@ -7,7 +7,7 @@ import Link from "next/link";
 import { logout } from "@/lib/auth/actions";
 import { getCurrentUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/db/server";
-import { t } from "@/lib/i18n/messages";
+import { getT } from "@/lib/i18n/server";
 
 const buttonClass =
   "rounded-full border border-black/15 px-3 py-1 text-sm transition-colors hover:bg-black/[.04] dark:border-white/20 dark:hover:bg-white/[.06]";
@@ -15,6 +15,7 @@ const buttonClass =
 export default async function AuthControls() {
   // 세부 정보를 보여 주는 화면과 같은 방식(서버에 물어 확인)으로 로그인을 확인한다.
   // 삭제된 계정의 낡은 증명서가 남아 있어도 "로그인한 것처럼" 보이지 않게 하기 위해서다.
+  const t = await getT();
   const user = await getCurrentUser();
 
   if (!user) {
@@ -33,9 +34,9 @@ export default async function AuthControls() {
     .maybeSingle();
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       {profile?.nickname && (
-        <span className="text-sm text-zinc-600 dark:text-zinc-400">
+        <span className="hidden text-sm text-zinc-600 sm:inline dark:text-zinc-400">
           {profile.nickname}
         </span>
       )}

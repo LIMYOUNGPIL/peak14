@@ -3,14 +3,16 @@
 // 숫자는 실제로 내려받은 양을 따라 올라간다. (가짜 숫자가 아니다)
 // 100%가 되면 숫자가 흐려지며 위로 사라지고, 화면이 열리면서 카메라가 날아 들어온다.
 
-import { t } from "@/lib/i18n/messages";
+import { makeT, type Locale } from "@/lib/i18n/messages";
 
 type Props = {
   percent: number; // 0~100
   leaving: boolean; // true 이면 사라지는 중
+  locale: Locale;
 };
 
-export default function Preloader({ percent, leaving }: Props) {
+export default function Preloader({ percent, leaving, locale }: Props) {
+  const t = makeT(locale);
   return (
     <div
       className={`hx-preloader ${leaving ? "is-leaving" : ""}`}

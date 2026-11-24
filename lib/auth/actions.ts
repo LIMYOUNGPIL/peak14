@@ -7,12 +7,13 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/db/server";
-import { t } from "@/lib/i18n/messages";
+import type { T } from "@/lib/i18n/messages";
+import { getT } from "@/lib/i18n/server";
 import { credentialsSchema, safeNextPath } from "./validation";
 
 export type AuthFormState = { error: string | null };
 
-function parse(formData: FormData) {
+function parse(formData: FormData, t: T) {
   const parsed = credentialsSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -33,7 +34,8 @@ export async function login(
   _prev: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
-  const { data, error } = parse(formData);
+  const t = await getT();
+  const { data, error } = parse(formData, t);
   if (!data) return { error };
 
   const supabase = await createClient();
@@ -50,7 +52,8 @@ export async function signup(
   _prev: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
-  const { data, error } = parse(formData);
+  const t = await getT();
+  const { data, error } = parse(formData, t);
   if (!data) return { error };
 
   const supabase = await createClient();

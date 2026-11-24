@@ -16,17 +16,15 @@ import { submitReview } from "@/lib/reviews/actions";
 import { toggleFavorite } from "@/lib/favorites/actions";
 import { getMyFavorites } from "@/lib/favorites/queries";
 import { getRouteReviews } from "@/lib/reviews/queries";
-import { t } from "@/lib/i18n/messages";
+import { makeT } from "@/lib/i18n/messages";
+import { getLocale } from "@/lib/i18n/server";
+import { mountainName, routeName, sourceText } from "@/lib/i18n/names";
 
 export default function RoutePage({
   params,
 }: PageProps<"/mountains/[slug]/routes/[routeId]">) {
   return (
-    <Suspense
-      fallback={
-        <p className="px-6 py-12 text-zinc-500">{t("common.loading")}</p>
-      }
-    >
+    <Suspense fallback={null}>
       <RouteDetail params={params} />
     </Suspense>
   );
@@ -37,6 +35,8 @@ async function RouteDetail({
 }: {
   params: PageProps<"/mountains/[slug]/routes/[routeId]">["params"];
 }) {
+  const locale = await getLocale();
+  const t = makeT(locale);
   const { slug, routeId } = await params;
   const mountain = getMountain(slug);
   if (!mountain) notFound();
@@ -52,11 +52,11 @@ async function RouteDetail({
           href={`/mountains/${mountain.slug}`}
           className="text-sm text-zinc-500 hover:underline"
         >
-          ← {mountain.nameKo}
+          ← {mountainName(mountain, locale)}
         </Link>
         <div className="mt-4">
           <LoginRequired
-            routeName={route.name}
+            routeName={routeName(route, locale)}
             safetyCount={route.safetyNotes.length}
             next={`/mountains/${mountain.slug}/routes/${route.id}`}
           />
@@ -74,7 +74,7 @@ async function RouteDetail({
   const rows: [string, ReactNode][] = [
     [
       t("route.distance"),
-      <InfoValue
+      <InfoValue locale={locale}
         key="distance"
         value={formatMeasure(route.distanceKm)}
         unit={t("route.unitKm")}
@@ -82,7 +82,7 @@ async function RouteDetail({
     ],
     [
       t("route.duration"),
-      <InfoValue
+      <InfoValue locale={locale}
         key="duration"
         value={formatMeasure(route.durationDays)}
         unit={t("route.unitDays")}
@@ -90,7 +90,7 @@ async function RouteDetail({
     ],
     [
       t("route.lodging"),
-      <InfoValue
+      <InfoValue locale={locale}
         key="lodging"
         value={route.lodgingCount}
         unit={t("route.unitPlaces")}
@@ -98,12 +98,12 @@ async function RouteDetail({
     ],
     [
       t("route.amenities"),
-      <InfoValue key="amenities" value={route.amenities?.join(", ")} />,
+      <InfoValue locale={locale} key="amenities" value={route.amenities?.join(", ")} />,
     ],
     [
       t("route.difficulty"),
       <span key="difficulty" className="flex flex-col items-end gap-0.5">
-        <InfoValue
+        <InfoValue locale={locale}
           value={
             route.difficulty === null
               ? null
@@ -114,8 +114,8 @@ async function RouteDetail({
         {route.difficulty !== null && (
           <span className="text-xs font-normal text-zinc-500">
             {t("route.difficultyBasis")}:{" "}
-            <InfoValue value={route.difficultySource} /> · {t("route.asOf")}:{" "}
-            <InfoValue value={route.difficultyAsOf} />
+            <InfoValue locale={locale} value={sourceText(route.difficultySource, locale)} /> · {t("route.asOf")}:{" "}
+            <InfoValue locale={locale} value={route.difficultyAsOf} />
           </span>
         )}
       </span>,
@@ -128,11 +128,11 @@ async function RouteDetail({
         href={`/mountains/${mountain.slug}`}
         className="text-sm text-zinc-500 hover:underline"
       >
-        ← {mountain.nameKo}
+        ← {mountainName(mountain, locale)}
       </Link>
 
       <h1 className="mt-4 mb-8 text-3xl font-bold tracking-tight">
-        {route.name}
+        {routeName(route, locale)}
       </h1>
 
       <div className="mb-8 -mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -143,7 +143,7 @@ async function RouteDetail({
           action={toggleFavorite}
           text={{ add: t("favorites.add"), remove: t("favorites.remove"), limit: t("favorites.limit"), failed: t("favorites.failed") }}
         />
-        <ShareButton label={t("share.button")} title={route.name} copied={t("share.copied")} failed={t("share.failed")} />
+        <ShareButton label={t("share.button")} title={routeName(route, locale)} copied={t("share.copied")} failed={t("share.failed")} />
         <CompareButton
           routeId={route.id}
           text={{
@@ -192,14 +192,14 @@ async function RouteDetail({
         <p className="mb-3 text-sm text-zinc-500">{t("route.safetyDisclaimer")}</p>
         {route.safetyNotes.length === 0 ? (
           <p className="text-zinc-600 dark:text-zinc-400">
-            <InfoValue value={null} />
+            <InfoValue locale={locale} value={null} />
           </p>
         ) : (
           <ul className="list-disc space-y-2 pl-5">
             {route.safetyNotes.map((note) => (
               <li key={note.text}>
                 {note.text}
-                {note.textKo && (
+                {locale === "ko" && note.textKo && (
                   <span className="mt-1 block text-[15px]">
                     <span className="mr-1 rounded-full bg-black/[.06] px-2 py-0.5 text-xs text-zinc-500 dark:bg-white/[.1]">
                       {t("route.koTranslation")}
@@ -209,7 +209,7 @@ async function RouteDetail({
                 )}
                 <span className="block text-sm text-zinc-500">
                   {note.language === "en" && <>{t("route.originalEnglish")} · </>}
-                  {t("route.source")}: {note.source} · {t("route.asOf")}:{" "}
+                  {t("route.source")}: {sourceText(note.source, locale)} · {t("route.asOf")}:{" "}
                   {note.asOf}
                 </span>
               </li>
@@ -219,7 +219,7 @@ async function RouteDetail({
       </section>
 
       {/* 후기 목록: 긍정·부정 대표 후기와 더보기, 중립·판정 중 구역, 5년 지난 후기 숨김 */}
-      <ReviewList reviews={reviews} currentYear={currentYear} />
+      <ReviewList reviews={reviews} currentYear={currentYear} locale={locale} />
 
       {/* 후기 쓰기: 로그인한 사용자만 이 화면에 들어올 수 있다. */}
       <section className="mt-10">
@@ -242,8 +242,8 @@ async function RouteDetail({
       </section>
 
       <p className="mt-8 text-sm text-zinc-500">
-        {t("route.source")}: <InfoValue value={route.source} /> ·{" "}
-        {t("route.asOf")}: <InfoValue value={route.asOf} />
+        {t("route.source")}: <InfoValue locale={locale} value={sourceText(route.source, locale)} /> ·{" "}
+        {t("route.asOf")}: <InfoValue locale={locale} value={route.asOf} />
       </p>
     </main>
   );

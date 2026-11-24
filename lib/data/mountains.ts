@@ -71,6 +71,7 @@ const HRA_SAFETY_NOTES = [
 const annapurnaCircuit: Route = {
   id: "annapurna-circuit",
   name: "안나푸르나 서킷 (Annapurna Circuit)",
+  nameEn: "Annapurna Circuit",
   // 위키백과 본문: "The total length of the route varies between 160 and 230 km (100-145 mi)"
   // (정보 상자에는 131 km 도 적혀 있으나 본문과 달라서, 본문의 범위를 따른다. 왕복·편도 여부는 자료에 없다.)
   distanceKm: { min: 160, max: 230 },
@@ -99,6 +100,7 @@ export const mountains: Mountain[] = [
   { slug: "everest", nameKo: "에베레스트", nameEn: "Everest", routes: [{
       id: "everest-base-camp-trek",
       name: "에베레스트 베이스캠프 트레킹 (남쪽, 네팔)",
+      nameEn: "Everest Base Camp Trek (South, Nepal)",
       // 자료에 전체 거리와 전체 일수가 적혀 있지 않아 비워 둔다. (구간별 일정은 개요에 있다)
       distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
@@ -112,6 +114,7 @@ export const mountains: Mountain[] = [
   { slug: "k2", nameKo: "K2", nameEn: "K2", routes: [{
       id: "baltoro-concordia",
       name: "발토로 빙하·콩코르디아 트레킹 (K2 베이스캠프 방면)",
+      nameEn: "Baltoro Glacier – Concordia Trek (towards K2 Base Camp)",
       // 문서에 거리와 일수가 없어 비워 둔다.
       distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
@@ -125,6 +128,7 @@ export const mountains: Mountain[] = [
   { slug: "kangchenjunga", nameKo: "칸첸중가", nameEn: "Kangchenjunga", routes: [{
       id: "goecha-la-trek",
       name: "고차 라 트레킹 (칸첸중가 남동쪽 조망, 인도 시킴)",
+      nameEn: "Goecha La Trek (view of Kangchenjunga's south-east, Sikkim, India)",
       // 자료에 적힌 구간 거리(10+7+10+10+14+16+17)를 더한 값이다. 합계는 자료에 없고 우리가 계산했다.
       distanceKm: 84, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
@@ -150,6 +154,7 @@ export const mountains: Mountain[] = [
   { slug: "manaslu", nameKo: "마나슬루", nameEn: "Manaslu", routes: [{
       id: "manaslu-circuit",
       name: "마나슬루 서킷 (Manaslu Circuit)",
+      nameEn: "Manaslu Circuit",
       // 문서: "The popular Manaslu trekking route of 177 kilometres". 왕복·편도 여부와 일수는 적혀 있지 않다.
       distanceKm: 177, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
@@ -163,6 +168,7 @@ export const mountains: Mountain[] = [
   { slug: "nanga-parbat", nameKo: "낭가파르바트", nameEn: "Nanga Parbat", routes: [{
       id: "fairy-meadows-trek",
       name: "페어리 메도 트레킹 (낭가파르바트 라키오트 면)",
+      nameEn: "Fairy Meadows Trek (Nanga Parbat, Raikot face)",
       // 문서: 타토 마을에서 페어리 메도까지 5 km 트레킹 (그 앞 15 km 는 지프 길이라 걷는 거리에서 뺐다)
       distanceKm: 5, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
@@ -176,6 +182,7 @@ export const mountains: Mountain[] = [
   { slug: "annapurna", nameKo: "안나푸르나", nameEn: "Annapurna", routes: [annapurnaCircuit, {
       id: "annapurna-sanctuary",
       name: "안나푸르나 생추어리 (Annapurna Sanctuary)",
+      nameEn: "Annapurna Sanctuary",
       // 문서에 거리와 일수가 없어 비워 둔다.
       distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,

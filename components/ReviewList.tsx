@@ -11,19 +11,22 @@
 // 규칙 계산은 lib/reviews/rules.ts (시험 있음)에 있고, 여기서는 화면만 그린다.
 
 import { useState } from "react";
-import { t } from "@/lib/i18n/messages";
+import { makeT, type Locale } from "@/lib/i18n/messages";
+import { authorLabel } from "@/lib/i18n/names";
 import { groupReviews, hasMore, reviewText, visibleSlice } from "@/lib/reviews/rules";
 import type { Review } from "@/types/review";
 
 type Props = {
   reviews: Review[];
+  locale: Locale;
   currentYear: number; // 서버가 정한 올해 (서버와 화면의 계산이 어긋나지 않도록 넘겨받는다)
 };
 
-function ReviewCard({ review }: { review: Review }) {
+function ReviewCard({ review, locale }: { review: Review; locale: Locale }) {
+  const t = makeT(locale);
   const external = review.origin === "external";
   const overseas = review.language !== "ko";
-  const text = reviewText(review, "ko");
+  const text = reviewText(review, locale);
   // 원문 링크는 https 주소만 연다. (저장소도 막지만 화면에서도 한 번 더 확인한다)
   const safeLink =
     review.originalUrl && review.originalUrl.startsWith("https://") ? review.originalUrl : null;
@@ -62,7 +65,7 @@ function ReviewCard({ review }: { review: Review }) {
         {external ? (
           <>
             <span>{t("reviews.aiSummary")}</span>
-            {review.authorName && <> · {t("reviews.writer", { name: review.authorName })}</>}
+            {review.authorName && <> · {t("reviews.writer", { name: authorLabel(review.authorName, locale) })}</>}
             {safeLink && (
               <>
                 {" · "}
@@ -96,11 +99,13 @@ function ReviewCard({ review }: { review: Review }) {
 }
 
 function Column({
+  locale,
   title,
   count,
   emptyText,
   items,
 }: {
+  locale: Locale;
   title: string;
   count: number;
   emptyText: string;
@@ -116,13 +121,14 @@ function Column({
           {emptyText}
         </p>
       ) : (
-        items.map((r) => <ReviewCard key={r.id} review={r} />)
+        items.map((r) => <ReviewCard key={r.id} review={r} locale={locale} />)
       )}
     </div>
   );
 }
 
-export default function ReviewList({ reviews, currentYear }: Props) {
+export default function ReviewList({ reviews, currentYear, locale }: Props) {
+  const t = makeT(locale);
   const [presses, setPresses] = useState(0); // "더보기"를 누른 횟수
   const [includeOld, setIncludeOld] = useState(false); // 5년 지난 후기 보기
 
@@ -146,12 +152,14 @@ export default function ReviewList({ reviews, currentYear }: Props) {
           {/* 긍정·부정 나란히 */}
           <div className="grid gap-6 sm:grid-cols-2">
             <Column
+              locale={locale}
               title={t("reviews.positive")}
               count={groups.positive.length}
               emptyText={t("reviews.noPositive")}
               items={visibleSlice(groups.positive, presses)}
             />
             <Column
+              locale={locale}
               title={t("reviews.negative")}
               count={groups.negative.length}
               emptyText={t("reviews.noNegative")}
@@ -180,7 +188,7 @@ export default function ReviewList({ reviews, currentYear }: Props) {
               </h3>
               <div className="grid gap-3 sm:grid-cols-2">
                 {groups.neutral.map((r) => (
-                  <ReviewCard key={r.id} review={r} />
+                  <ReviewCard key={r.id} review={r} locale={locale} />
                 ))}
               </div>
             </div>
@@ -196,7 +204,7 @@ export default function ReviewList({ reviews, currentYear }: Props) {
               <p className="text-xs text-zinc-500">{t("reviews.pendingNote")}</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {groups.pending.map((r) => (
-                  <ReviewCard key={r.id} review={r} />
+                  <ReviewCard key={r.id} review={r} locale={locale} />
                 ))}
               </div>
             </div>

@@ -14,7 +14,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
 import { createAdminClient } from "@/lib/db/admin";
 import { createClient } from "@/lib/db/server";
-import { t } from "@/lib/i18n/messages";
+import { getT } from "@/lib/i18n/server";
 import { classifyAndSaveReview } from "./classify";
 import { checkReviewText } from "./filter";
 
@@ -40,6 +40,7 @@ export async function submitReview(
   _prev: ReviewFormState,
   formData: FormData,
 ): Promise<ReviewFormState> {
+  const t = await getT();
   const user = await getCurrentUser();
   if (!user) return fail(t("review.needLogin"));
 

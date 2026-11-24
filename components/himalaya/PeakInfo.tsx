@@ -6,12 +6,15 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import InfoValue from "@/components/InfoValue";
-import { t } from "@/lib/i18n/messages";
+import { countryName } from "@/lib/i18n/countries";
+import { makeT, type Locale } from "@/lib/i18n/messages";
+import { sourceText } from "@/lib/i18n/names";
 import type { PublicMountain } from "@/types/mountain";
 
 type Props = {
   mountain: PublicMountain | null;
   onClose: () => void;
+  locale: Locale;
 };
 
 function formatCoords(lat: number | null, lon: number | null): string | null {
@@ -21,7 +24,8 @@ function formatCoords(lat: number | null, lon: number | null): string | null {
   return `${Math.abs(lat).toFixed(3)}°${ns}, ${Math.abs(lon).toFixed(3)}°${ew}`;
 }
 
-export default function PeakInfo({ mountain, onClose }: Props) {
+export default function PeakInfo({ mountain, onClose, locale }: Props) {
+  const t = makeT(locale);
   if (!mountain) {
     return (
       <div key="home" className="hx-info hx-rise">
@@ -63,7 +67,7 @@ export default function PeakInfo({ mountain, onClose }: Props) {
         </>
       ) : (
         <p className="hx-story-body">
-          <InfoValue value={null} />
+          <InfoValue value={null} locale={locale} />
         </p>
       )}
     </aside>
@@ -85,21 +89,22 @@ export default function PeakInfo({ mountain, onClose }: Props) {
             <dt>{t("explore.elevation")}</dt>
             <dd>
               <InfoValue
-                value={mountain.elevationM === null ? null : mountain.elevationM.toLocaleString("ko-KR")}
+                value={mountain.elevationM === null ? null : mountain.elevationM.toLocaleString(locale === "en" ? "en-US" : "ko-KR")}
                 unit=" m"
+                locale={locale}
               />
             </dd>
           </div>
           <div className="hx-fact">
             <dt>{t("explore.location")}</dt>
             <dd>
-              <InfoValue value={formatCoords(mountain.lat, mountain.lon)} />
+              <InfoValue value={formatCoords(mountain.lat, mountain.lon)} locale={locale} />
             </dd>
           </div>
           <div className="hx-fact">
             <dt>{t("explore.countries")}</dt>
             <dd>
-              <InfoValue value={mountain.countries?.join(" · ")} />
+              <InfoValue value={mountain.countries?.map((c) => countryName(c, locale)).join(" · ")} locale={locale} />
             </dd>
           </div>
           <div className="hx-fact">
@@ -109,7 +114,7 @@ export default function PeakInfo({ mountain, onClose }: Props) {
         </dl>
 
         <p className="hx-source">
-          {t("explore.source")}: <InfoValue value={mountain.source} /> ({mountain.asOf ?? t("common.noInfo")})
+          {t("explore.source")}: <InfoValue value={sourceText(mountain.source, locale)} locale={locale} /> ({mountain.asOf ?? t("common.noInfo")})
         </p>
 
         <div className="hx-actions">

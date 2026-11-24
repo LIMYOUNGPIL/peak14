@@ -8,15 +8,26 @@ import { getMountain, mountains } from "@/lib/data/mountains";
 import { toggleFavorite } from "@/lib/favorites/actions";
 import { getMyFavorites } from "@/lib/favorites/queries";
 import { toPublicRoute } from "@/lib/data/public";
-import { t } from "@/lib/i18n/messages";
+import { makeT } from "@/lib/i18n/messages";
+import { getLocale } from "@/lib/i18n/server";
+import { mountainName, routeName } from "@/lib/i18n/names";
 
 export function generateStaticParams() {
   return mountains.map((m) => ({ slug: m.slug }));
 }
 
-export default async function MountainPage({
-  params,
-}: PageProps<"/mountains/[slug]">) {
+export default function MountainPage({ params }: PageProps<"/mountains/[slug]">) {
+  // 고른 언어는 쿠키에서 읽으므로 본문은 요청이 올 때 만든다.
+  return (
+    <Suspense fallback={null}>
+      <MountainContent params={params} />
+    </Suspense>
+  );
+}
+
+async function MountainContent({ params }: { params: PageProps<"/mountains/[slug]">["params"] }) {
+  const locale = await getLocale();
+  const t = makeT(locale);
   const { slug } = await params;
   const mountain = getMountain(slug);
   if (!mountain) notFound();
@@ -31,12 +42,12 @@ export default async function MountainPage({
 
       <section className="mt-4 mb-8">
         <h1 className="text-3xl font-bold tracking-tight">
-          {mountain.nameKo}
+          {mountainName(mountain, locale)}
         </h1>
-        <p className="text-zinc-500">{mountain.nameEn}</p>
+        <p className="text-zinc-500">{locale === "en" ? mountain.nameKo : mountain.nameEn}</p>
         {/* 로그인한 사용자에게만 즐겨찾기 버튼을 보여 준다. (산 화면은 로그인 전에도 열린다) */}
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <ShareButton label={t("share.button")} title={mountain.nameKo} copied={t("share.copied")} failed={t("share.failed")} />
+          <ShareButton label={t("share.button")} title={mountainName(mountain, locale)} copied={t("share.copied")} failed={t("share.failed")} />
           <Suspense fallback={null}>
             <MountainFavorite slug={mountain.slug} />
           </Suspense>
@@ -61,7 +72,7 @@ export default async function MountainPage({
                   href={`/mountains/${mountain.slug}/routes/${r.id}`}
                   className="block rounded-xl border border-black/10 p-5 transition-colors hover:bg-black/[.04] dark:border-white/15 dark:hover:bg-white/[.06]"
                 >
-                  <span className="font-semibold">{r.name}</span>
+                  <span className="font-semibold">{routeName(r, locale)}</span>
                   <span className="mt-1 block text-sm text-zinc-500">
                     {r.safetyCount > 0
                       ? t("mountain.safetyCount", { count: r.safetyCount })
@@ -78,6 +89,7 @@ export default async function MountainPage({
 }
 
 async function MountainFavorite({ slug }: { slug: string }) {
+  const t = makeT(await getLocale());
   const user = await getCurrentUser();
   if (!user) return null;
   const isFavorite = (await getMyFavorites(user.id)).some((f) => f.mountain_slug === slug && f.route_id === null);

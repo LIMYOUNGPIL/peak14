@@ -4,7 +4,7 @@
 // 안전 유의사항의 내용은 여기로 넘겨받지 않는다. (건수만 받는다)
 
 import Link from "next/link";
-import { t } from "@/lib/i18n/messages";
+import { getT } from "@/lib/i18n/server";
 
 type Props = {
   routeName: string;
@@ -12,7 +12,8 @@ type Props = {
   next: string; // 로그인한 뒤 돌아올 주소
 };
 
-export default function LoginRequired({ routeName, safetyCount, next }: Props) {
+export default async function LoginRequired({ routeName, safetyCount, next }: Props) {
+  const t = await getT();
   const query = `?next=${encodeURIComponent(next)}`;
 
   return (

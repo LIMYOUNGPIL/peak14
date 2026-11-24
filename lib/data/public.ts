@@ -24,7 +24,7 @@ export function toPublicMountain(m: Mountain): PublicMountain {
 }
 
 export function toPublicRoute(r: Route): PublicRoute {
-  return { id: r.id, name: r.name, safetyCount: r.safetyNotes.length };
+  return { id: r.id, name: r.name, nameEn: r.nameEn, safetyCount: r.safetyNotes.length };
 }
 
 export function getPublicMountains(): PublicMountain[] {

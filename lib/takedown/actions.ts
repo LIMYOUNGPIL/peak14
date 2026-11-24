@@ -10,13 +10,14 @@
 // 운영자가 요청자를 확인한 뒤 `npm run takedown:process` 로 처리한다.
 
 import { createAdminClient } from "@/lib/db/admin";
-import { t } from "@/lib/i18n/messages";
+import { getT } from "@/lib/i18n/server";
 import { DAILY_LIMIT_PER_EMAIL, DAILY_LIMIT_TOTAL, matchesRequestedUrl, takedownSchema } from "./validation";
 
 export type TakedownState = { status: "idle" | "error" | "success"; message: string | null };
 const fail = (message: string): TakedownState => ({ status: "error", message });
 
 export async function submitTakedown(_prev: TakedownState, formData: FormData): Promise<TakedownState> {
+  const t = await getT();
   // 사람 눈에 보이지 않는 칸이 채워져 있으면 봇이다. 성공한 것처럼 답하고 저장하지 않는다.
   if (String(formData.get("website") ?? "") !== "") return { status: "success", message: t("takedown.success") };
 

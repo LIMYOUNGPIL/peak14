@@ -18,7 +18,7 @@ import {
   type ComponentType,
 } from "react";
 import MountainGrid from "@/components/MountainGrid";
-import { t } from "@/lib/i18n/messages";
+import { makeT, type Locale } from "@/lib/i18n/messages";
 import type { PublicMountain } from "@/types/mountain";
 import CustomCursor from "./CustomCursor";
 import PeakInfo from "./PeakInfo";
@@ -74,7 +74,8 @@ function useMediaQuery(query: string): boolean {
   );
 }
 
-export default function Experience({ mountains }: { mountains: PublicMountain[] }) {
+export default function Experience({ mountains, locale }: { mountains: PublicMountain[]; locale: Locale }) {
+  const t = useMemo(() => makeT(locale), [locale]);
   const containerRef = useRef<HTMLDivElement>(null);
   const labelRefs = useRef<(HTMLElement | null)[]>([]);
 
@@ -202,7 +203,7 @@ export default function Experience({ mountains }: { mountains: PublicMountain[] 
               onPointerLeave={() => onHover(null)}
             >
               <span className="hx-label-no">{String(p.number).padStart(2, "0")}</span>
-              <span className="hx-label-name">{p.nameKo}</span>
+              <span className="hx-label-name">{locale === "en" ? p.nameEn : p.nameKo}</span>
             </button>
           ))}
         </div>
@@ -214,13 +215,13 @@ export default function Experience({ mountains }: { mountains: PublicMountain[] 
       {/* 장면 위의 화면 요소들: 카메라가 자리를 잡으면 나타난다 */}
       {showScene && exploring && (
         <>
-          <PeakList mountains={mountains} selected={selected} onSelect={onSelect} />
+          <PeakList mountains={mountains} selected={selected} onSelect={onSelect} locale={locale} />
           <div className="hx-topright">
             <button type="button" className="hx-pill" onClick={() => setView("list")}>
               {t("explore.listView")}
             </button>
           </div>
-          <PeakInfo mountain={selectedMountain} onClose={() => setSelected(null)} />
+          <PeakInfo mountain={selectedMountain} onClose={() => setSelected(null)} locale={locale} />
           {terrain && (
             <p className="hx-credit">
               {t("explore.exaggeration", { n: EXAGGERATION })} ·{" "}
@@ -252,13 +253,13 @@ export default function Experience({ mountains }: { mountains: PublicMountain[] 
                 </button>
               )}
             </div>
-            <MountainGrid mountains={mountains} />
+            <MountainGrid mountains={mountains} locale={locale} />
           </div>
         </div>
       )}
 
       {/* 로딩 화면 */}
-      {showScene && !preloaderGone && <Preloader percent={shownPercent} leaving={leaving} />}
+      {showScene && !preloaderGone && <Preloader percent={shownPercent} leaving={leaving} locale={locale} />}
     </div>
   );
 }

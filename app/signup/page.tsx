@@ -4,12 +4,12 @@ import { signup } from "@/lib/auth/actions";
 import { enabledProviders } from "@/lib/auth/providers";
 import { loginWithProvider } from "@/lib/auth/social";
 import { safeNextPath } from "@/lib/auth/validation";
-import { t } from "@/lib/i18n/messages";
+import { getT } from "@/lib/i18n/server";
 
 export default function SignupPage({ searchParams }: PageProps<"/signup">) {
   return (
     <main className="mx-auto w-full max-w-sm flex-1 px-6 py-12">
-      <Suspense fallback={<p className="text-zinc-500">{t("common.loading")}</p>}>
+      <Suspense fallback={null}>
         <SignupForm searchParams={searchParams} />
       </Suspense>
     </main>
@@ -21,6 +21,7 @@ async function SignupForm({
 }: {
   searchParams: PageProps<"/signup">["searchParams"];
 }) {
+  const t = await getT();
   const { next, error } = await searchParams;
   const providers = enabledProviders().map((id) => ({
     id,

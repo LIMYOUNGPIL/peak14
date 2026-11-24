@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import TakedownForm from "@/components/TakedownForm";
 import { submitTakedown } from "@/lib/takedown/actions";
-import { t } from "@/lib/i18n/messages";
+import { Suspense } from "react";
+import { getT } from "@/lib/i18n/server";
 
-export const metadata: Metadata = { title: `${t("takedown.title")} · ${t("common.siteName")}` };
+export const metadata: Metadata = { title: "Peak14" };
 
 export default function TakedownPage() {
+  return (
+    <Suspense fallback={null}>
+      <TakedownContent />
+    </Suspense>
+  );
+}
+
+async function TakedownContent() {
+  const t = await getT();
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-6 py-12">
       <h1 className="mb-2 text-2xl font-bold">{t("takedown.title")}</h1>

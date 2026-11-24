@@ -5,9 +5,10 @@
 
 import Link from "next/link";
 import type { PublicMountain } from "@/types/mountain";
-import { t } from "@/lib/i18n/messages";
+import { makeT, type Locale } from "@/lib/i18n/messages";
 
-export default function MountainGrid({ mountains }: { mountains: PublicMountain[] }) {
+export default function MountainGrid({ mountains, locale }: { mountains: PublicMountain[]; locale: Locale }) {
+  const t = makeT(locale);
   return (
     <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {mountains.map((m, i) => (
@@ -17,8 +18,8 @@ export default function MountainGrid({ mountains }: { mountains: PublicMountain[
             className="block rounded-xl border border-black/10 p-5 transition-colors hover:bg-black/[.04] dark:border-white/15 dark:hover:bg-white/[.06]"
           >
             <span className="text-sm text-zinc-500">{i + 1}</span>
-            <h2 className="mt-1 text-xl font-semibold">{m.nameKo}</h2>
-            <p className="text-sm text-zinc-500">{m.nameEn}</p>
+            <h2 className="mt-1 text-xl font-semibold">{locale === "en" ? m.nameEn : m.nameKo}</h2>
+            <p className="text-sm text-zinc-500">{locale === "en" ? m.nameKo : m.nameEn}</p>
             <p className="mt-3 text-sm">
               {m.routeCount > 0
                 ? t("home.routeCount", { count: m.routeCount })

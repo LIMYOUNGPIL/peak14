@@ -22,7 +22,8 @@ export type SafetyNote = {
 
 export type Route = {
   id: string;
-  name: string;
+  name: string; // 한국어 이름
+  nameEn: string; // 영어 이름
   distanceKm: Measure | null; // 총 거리(km)
   durationDays: Measure | null; // 소요 시간(일)
   lodgingCount: number | null; // 숙소 개수
@@ -77,5 +78,6 @@ export type PublicMountain = Pick<
 export type PublicRoute = {
   id: string;
   name: string;
+  nameEn: string;
   safetyCount: number;
 };
