@@ -226,7 +226,7 @@ export default function Experience({ mountains, locale }: { mountains: PublicMou
             <p className="hx-credit">
               {t("explore.exaggeration", { n: EXAGGERATION })} ·{" "}
               {t("explore.terrainSource", { text: terrain.meta.sources.attribution })}{" "}
-              {t("explore.colorNote")} {t("explore.outerNote")}
+              {t("explore.colorNote")}
             </p>
           )}
           <CustomCursor enabled={finePointer} containerRef={containerRef} label={cursorLabel} hovering={hovered !== null} />
