@@ -129,6 +129,9 @@ body {
   .hx-story { left: 18px; right: 18px; width: auto; top: 60px; max-height: 26vh; }
 }
 
+/* 산을 골랐을 때의 정보 묶음: 넓은 화면에서는 각 요소가 따로 자리를 잡고, 휴대폰에서는 아래 패널 하나로 합친다 */
+.hx-sheet { display: contents; }
+
 /* 아래 산 정보 */
 .hx-info {
   position: absolute; z-index: 4; pointer-events: none;
@@ -171,6 +174,19 @@ body {
   .hx-pill { padding: 11px 16px; }
   .hx-primary, .hx-secondary { min-height: 44px; display: inline-flex; align-items: center; }
   .hx-label, .hx-label.is-compact { padding: 8px 11px; }
+  /* 산 정보와 산 이야기를 겹치지 않게 아래 패널 하나에 쌓고, 넘치면 패널 안에서 스크롤한다 */
+  .hx-sheet {
+    display: flex; flex-direction: column; gap: 12px;
+    position: absolute; z-index: 5; left: 12px; right: 12px; bottom: 58px;
+    max-height: calc(100% - 70px); overflow-y: auto; overscroll-behavior: contain;
+    padding: 16px 16px 14px; border-radius: 20px;
+    background: rgba(4, 8, 14, 0.78); backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-line);
+  }
+  .hx-sheet .hx-info { order: 1; position: static; display: block; pointer-events: auto; }
+  .hx-sheet .hx-story { order: 2; position: static; width: auto; max-height: none; flex: none; background: rgba(255, 255, 255, 0.06); backdrop-filter: none; }
+  .hx-sheet .hx-story-body { overflow: visible; max-height: none; }
+  .hx-sheet .hx-title { font-size: clamp(26px, 8.2vw, 40px) !important; overflow-wrap: anywhere; line-height: 1; }
   .hx-info { display: block; left: 18px; right: 18px; bottom: 86px; }
   .hx-hint { margin-top: 14px; text-align: left; max-width: none; }
   .hx-facts-wrap { width: 100%; margin-top: 16px; }
