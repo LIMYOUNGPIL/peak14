@@ -210,3 +210,12 @@ export function getRoute(
 ): Route | undefined {
   return mountain.routes.find((r) => r.id === routeId);
 }
+
+// 루트 id 로 루트와 그 루트가 속한 산을 함께 찾는다. (루트 비교에서 쓴다)
+export function findRoute(routeId: string): { mountain: Mountain; route: Route } | undefined {
+  for (const mountain of mountains) {
+    const route = mountain.routes.find((r) => r.id === routeId);
+    if (route) return { mountain, route };
+  }
+  return undefined;
+}

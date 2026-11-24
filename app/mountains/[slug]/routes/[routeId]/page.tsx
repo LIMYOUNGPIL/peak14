@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import CompareButton from "@/components/CompareButton";
 import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
 import ReviewForm from "@/components/ReviewForm";
@@ -128,6 +129,16 @@ async function RouteDetail({
       <h1 className="mt-4 mb-8 text-3xl font-bold tracking-tight">
         {route.name}
       </h1>
+
+      <div className="mb-8 -mt-4">
+        <CompareButton
+          routeId={route.id}
+          text={{
+            add: t("compare.add"), remove: t("compare.remove"), full: t("compare.full"),
+            compare: t("compare.go"), clear: t("compare.clear"), count: t("compare.count"),
+          }}
+        />
+      </div>
 
       {/* 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글 (AI가 옮겼다는 표시와 원문 링크 포함) */}
       {route.overview && (
