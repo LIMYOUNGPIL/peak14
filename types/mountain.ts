@@ -32,6 +32,13 @@ export type Route = {
   difficultySource: string | null; // 난이도 근거(출처). 근거가 없으면 난이도도 null
   difficultyAsOf: string | null; // 난이도 근거의 기준일 (YYYY-MM-DD)
   safetyNotes: SafetyNote[]; // 안전 유의사항. 빈 배열이면 "정보 없음"
+  // 고도 그래프용 주요 지점(출처에 고도가 적힌 지점만, 가는 순서대로). 2개 미만이면 그래프를 그리지 않고 "정보 없음".
+  // 지점 사이의 거리·오르내림은 자료에 없어서 그래프에 반영하지 않는다.
+  elevationProfile?: {
+    points: { name: string; nameEn: string; elevationM: number }[];
+    source: string;
+    asOf: string;
+  } | null;
   // 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글. 출처 링크와 기준일을 함께 가진다. 없으면 null
   overview: { text: string; source: string; asOf: string } | null;
   source: string | null; // 출처

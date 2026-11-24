@@ -7,6 +7,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
 import ShareButton from "@/components/ShareButton";
+import RouteVisual from "@/components/RouteVisual";
 import ReviewForm from "@/components/ReviewForm";
 import ReviewList from "@/components/ReviewList";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -152,6 +153,9 @@ async function RouteDetail({
           }}
         />
       </div>
+
+      {/* 루트 한눈에 보기: 산 위치 지도와 고도 그래프 (첫 화면과 같은 새벽 노을빛) */}
+      <RouteVisual mountain={mountain} route={route} locale={locale} />
 
       {/* 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글 (AI가 옮겼다는 표시와 원문 링크 포함) */}
       {route.overview && (

@@ -10,7 +10,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ComponentRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { makeFrame, sampleElevation, type Frame } from "./geo";
 import type { TerrainData } from "./terrain";
@@ -40,9 +40,9 @@ type Props = {
   onIntroDone: () => void;
 };
 
-const BACKGROUND = "#070d18";
+const FOG = "#5d5a8a"; // 먼 지형이 노을빛 하늘로 녹아드는 색
 const HOME_TARGET = new THREE.Vector3(0, 0, -0.4);
-const HOME_DISTANCE = 19;
+const HOME_DISTANCE = 16;
 const HOME_DIRECTION = new THREE.Vector3(0, 0.7, 0.714).normalize();
 const INTRO_START = new THREE.Vector3(0, 52, 8);
 const POLE = 0.6; // 표지 기둥 높이
@@ -175,7 +175,7 @@ function PeakMarker({
 }) {
   const ring = useRef<THREE.Mesh>(null);
   const phase = peak.number * 0.9;
-  const color = selected ? "#ffb454" : "#e9f1ff";
+  const color = selected ? "#ffcf9a" : "#fff0ec";
 
   useFrame(({ clock }) => {
     if (!ring.current) return;
@@ -395,11 +395,11 @@ function World({
 
   return (
     <>
-      <color attach="background" args={[BACKGROUND]} />
-      <fog attach="fog" args={[BACKGROUND, 22, 70]} />
-      <hemisphereLight args={["#9db7e0", "#3b3128", 0.85]} />
-      <directionalLight position={[-9, 5.5, 8]} intensity={2.9} color="#ffd9b0" />
-      <Stars radius={140} depth={40} count={1800} factor={4} saturation={0} fade speed={0.4} />
+      {/* 배경은 화면(CSS)의 노을빛 그라데이션이 맡는다. 3D 는 투명하게 그린다. */}
+      <fog attach="fog" args={[FOG, 21, 64]} />
+      <hemisphereLight args={["#c9c6f0", "#6a4e5c", 0.85]} />
+      <directionalLight position={[-10, 3.6, 7]} intensity={3.4} color="#ffc79c" />
+      <directionalLight position={[8, 6, -6]} intensity={0.7} color="#a9b4ff" />
 
       <Terrain terrain={terrain} frame={frame} stride={coarsePointer ? 2 : 1} />
       {peaks.map((p, idx) => (
@@ -447,7 +447,7 @@ export default function Scene(props: Props) {
     <Canvas
       dpr={[1, 2]}
       camera={{ fov: 42, near: 0.05, far: 400, position: [0, 44, 7] }}
-      gl={{ antialias: true, powerPreference: "high-performance" }}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onPointerMissed={() => props.onSelect(null)}
     >
       <World {...props} />

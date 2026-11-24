@@ -203,5 +203,15 @@
     "button": "Share",
     "copied": "Address copied.",
     "failed": "Could not share. Please copy the address from the address bar."
+  },
+  "visual": {
+    "title": "The route at a glance",
+    "mapTitle": "Peak location",
+    "mapNote": "Map colours are computed from elevation and slope; this is not a satellite image. The marker is the summit's coordinates, not the trekking path.",
+    "chartTitle": "Elevation graph · key points",
+    "chartNote": "Only points whose elevation is given in the source are joined, in walking order. Distances between points and ups and downs are not reflected.",
+    "chartNone": "Fewer than 2 points with a known elevation were found for this route, so no graph is drawn.",
+    "peak": "Summit",
+    "meters": "{n} m"
   }
 }

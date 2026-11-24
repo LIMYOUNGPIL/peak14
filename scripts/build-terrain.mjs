@@ -141,13 +141,13 @@ const smooth = (a, b, v) => {
 };
 // 고도 구간별 기본색: 낮은 곳은 건조한 평지, 중간은 초목, 높은 곳은 암석
 const RAMP = [
-  [0, [138, 140, 96]],
-  [900, [118, 132, 84]],
-  [2200, [84, 112, 72]],
-  [3300, [112, 116, 82]],
-  [4300, [150, 134, 108]],
-  [5200, [150, 142, 132]],
-  [6200, [134, 130, 126]],
+  [0, [92, 108, 128]],
+  [900, [104, 120, 130]],
+  [2200, [108, 124, 118]],
+  [3300, [150, 134, 112]],
+  [4300, [190, 150, 112]],
+  [5200, [200, 162, 132]],
+  [6200, [176, 154, 150]],
 ];
 function baseColor(e) {
   if (e <= RAMP[0][0]) return RAMP[0][1];
@@ -179,11 +179,11 @@ for (let j = 0; j < CH; j++) {
 
     let color = baseColor(e);
     // 가파른 곳은 암석이 드러난다.
-    color = mix(color, [112, 106, 100], smooth(28, 48, slope) * smooth(1500, 3500, e));
+    color = mix(color, [92, 88, 106], smooth(26, 46, slope) * smooth(1500, 3500, e));
     // 눈: 높을수록 많이 쌓이고, 아주 가파른 절벽에는 덜 쌓인다.
     const snowLine = 5300 - smooth(0, 1, 0) * 0;
     const snow = smooth(snowLine - 300, snowLine + 700, e) * (1 - smooth(42, 62, slope) * 0.85);
-    color = mix(color, [244, 247, 250], clamp01(snow));
+    color = mix(color, [252, 247, 244], clamp01(snow));
 
     const o = (j * CW + i) * 4;
     png.data[o] = Math.round(color[0]);

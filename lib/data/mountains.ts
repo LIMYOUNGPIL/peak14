@@ -105,6 +105,18 @@ export const mountains: Mountain[] = [
       distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
       safetyNotes: HRA_SAFETY_NOTES,
+      // 위키백과 Everest base camps 본문에 고도가 적힌 지점. 순서는 본문의 일정 소개 순서다.
+      elevationProfile: {
+        points: [
+          { name: "루클라", nameEn: "Lukla", elevationM: 2846 },
+          { name: "남체 바자르", nameEn: "Namche Bazaar", elevationM: 3440 },
+          { name: "딩보체", nameEn: "Dingboche", elevationM: 4260 },
+          { name: "칼라파타르", nameEn: "Kala Patthar", elevationM: 5545 },
+          { name: "베이스캠프", nameEn: "Base camp", elevationM: 5364 },
+        ],
+        source: "위키백과 Everest base camps https://en.wikipedia.org/wiki/Everest_base_camps (확인일 2026-11-23)",
+        asOf: "2026-11-23",
+      },
       overview: overview("Everest_base_camps", "남쪽(네팔) 에베레스트 베이스캠프(해발 5,364 m) 트레킹은 히말라야에서 가장 인기 있는 트레킹 코스 가운데 하나로, 해마다 약 4만 명이 루클라 공항(2,846 m)에서 출발해 걷습니다. 보통 카트만두에서 루클라까지 비행기로 간 뒤 걷기 시작합니다. 카트만두에서 루클라까지는 도로가 없습니다.\n일정은 이렇게 소개됩니다. 루클라에서 두드 코시강 계곡을 따라 셰르파의 중심지 남체 바자르(3,440 m)까지 약 이틀이 걸리고, 이곳에서 고소 적응을 위해 하루 쉬는 것이 일반적입니다. 이어 이틀을 더 걸어 딩보체(4,260 m)에 가서 다시 하루 쉬고, 이틀을 더 가면 칼라파타르(5,545 m)와 푸모리 아래의 평지 고락셉을 거쳐 베이스캠프에 닿습니다. 대부분 텡보체 수도원을 지나는 전통 길을 쓰지만, 최근에는 몽라와 폭체를 지나는 높은 길도 인기를 얻고 있습니다.\n2015년 4월 지진으로 일부 길이 손상되어 수리가 필요했습니다. 2022년 6월 17일에는 쿰부 빙하가 빠르게 녹고 얇아져 트레커에게 위험하다는 이유로 베이스캠프를 200~400 m 아래로 옮긴다고 발표되었습니다."),
       source: "위키백과 Everest base camps https://en.wikipedia.org/wiki/Everest_base_camps (확인일 2026-11-23, 문서 마지막 수정 2026-11-22)",
       asOf: "2026-11-23",
@@ -159,6 +171,18 @@ export const mountains: Mountain[] = [
       distanceKm: 177, durationDays: null, lodgingCount: null, amenities: null,
       difficulty: null, difficultySource: null, difficultyAsOf: null,
       safetyNotes: HRA_SAFETY_NOTES,
+      // 지점 고도: 위키보야지 Manaslu Trek(로 바자르·시알라·사마가온·틸체)와 위키백과 Larkya La(라르키아 라). 순서는 걷는 순서다.
+      elevationProfile: {
+        points: [
+          { name: "로 바자르", nameEn: "Lho Bazar", elevationM: 3100 },
+          { name: "시알라", nameEn: "Shyala", elevationM: 3500 },
+          { name: "사마가온", nameEn: "Samagaon", elevationM: 3500 },
+          { name: "라르키아 라 고개", nameEn: "Larkya La", elevationM: 5106 },
+          { name: "틸체", nameEn: "Tilche", elevationM: 2100 },
+        ],
+        source: "위키보야지 Manaslu Trek https://en.wikivoyage.org/wiki/Manaslu_Trek (CC BY-SA 4.0, 확인일 2026-11-24) · 위키백과 Larkya La https://en.wikipedia.org/wiki/Larkya_La (확인일 2026-11-23)",
+        asOf: "2026-11-24",
+      },
       overview: overview("Manaslu", "마나슬루 서킷으로 알려진 트레킹 코스는 177 km이며, 마나슬루 산군을 돌아 고개를 넘어 안나푸르나 쪽으로 내려갑니다. 네팔 정부는 이 코스의 트레킹을 1991년에야 허가했습니다.\n길은 부디 간다키강을 따라가는 옛 소금 교역로를 따릅니다. 길에서는 6,500 m가 넘는 봉우리 10개가 보이고, 그중 몇 개는 7,000 m가 넘습니다. 코스에서 가장 높은 곳은 라르키아 라 고개(5,106 m)이며, 이 고개는 다르마샬라와 빔탕 사이에 있고 네팔 히말라야에서 가장 긴 고개 중 하나로 소개됩니다."),
       source: "위키백과 Manaslu https://en.wikipedia.org/wiki/Manaslu 와 Larkya La https://en.wikipedia.org/wiki/Larkya_La (확인일 2026-11-23, 문서 마지막 수정 2026-11-22)",
       asOf: "2026-11-23",
