@@ -5,10 +5,12 @@ import { notFound } from "next/navigation";
 import InfoValue from "@/components/InfoValue";
 import LoginRequired from "@/components/LoginRequired";
 import ReviewForm from "@/components/ReviewForm";
+import ReviewList from "@/components/ReviewList";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
 import { formatMeasure } from "@/lib/format";
 import { submitReview } from "@/lib/reviews/actions";
+import { getRouteReviews } from "@/lib/reviews/queries";
 import { t } from "@/lib/i18n/messages";
 
 export default function RoutePage({
@@ -57,6 +59,10 @@ async function RouteDetail({
       </main>
     );
   }
+
+  // 이 루트의 후기 (로그인한 사용자만 읽을 수 있다). 올해는 서버가 정해서 화면에 넘긴다.
+  const reviews = await getRouteReviews(route.id);
+  const currentYear = new Date().getUTCFullYear();
 
   // 값이 없으면 InfoValue 가 "정보 없음"으로 보여 준다.
   const rows: [string, ReactNode][] = [
@@ -180,7 +186,10 @@ async function RouteDetail({
         )}
       </section>
 
-      {/* 후기 쓰기: 로그인한 사용자만 이 화면에 들어올 수 있다. 후기 목록은 PLAN 12번에서 만든다. */}
+      {/* 후기 목록: 긍정·부정 대표 후기와 더보기, 중립·판정 중 구역, 5년 지난 후기 숨김 */}
+      <ReviewList reviews={reviews} currentYear={currentYear} />
+
+      {/* 후기 쓰기: 로그인한 사용자만 이 화면에 들어올 수 있다. */}
       <section className="mt-10">
         <h2 className="mb-2 text-lg font-semibold">{t("review.writeTitle")}</h2>
         <p className="mb-4 text-sm text-zinc-500">{t("review.writeHint")}</p>
