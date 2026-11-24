@@ -6,11 +6,13 @@
 // 저장은 로그인한 사용자 본인의 권한으로 한다. (저장소 접근 규칙이 "본인 이름으로만, 앱 안 후기로만,
 // AI 판정은 비워서"를 한 번 더 지켜 준다.)
 
+import { after } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getMountain, getRoute } from "@/lib/data/mountains";
 import { createClient } from "@/lib/db/server";
 import { t } from "@/lib/i18n/messages";
+import { classifyAndSaveReview } from "./classify";
 import { checkReviewText } from "./filter";
 
 export type ReviewFormState = {
@@ -74,7 +76,7 @@ export async function submitReview(
     .gte("created_at", since);
   if ((count ?? 0) >= DAILY_REVIEW_LIMIT) return fail(t("review.dailyLimit"));
 
-  const { error } = await supabase.from("reviews").insert({
+  const { data: saved, error } = await supabase.from("reviews").insert({
     route_id: route.id,
     origin: "app",
     written_year: new Date().getFullYear(),
@@ -83,9 +85,15 @@ export async function submitReview(
     author_id: user.id,
     body,
     rating,
-    // sentiment 는 비워 둔다. AI 판정(PLAN 11번)이 나중에 채운다.
+    // sentiment 는 비워 둔다. 아래에서 AI 가 판정해 서버가 채운다.
+  }).select("id").single();
+  if (error || !saved) return fail(t("review.failed"));
+
+  // 사용자를 기다리게 하지 않고, 응답을 보낸 뒤에 AI 판정을 한다.
+  // 판정에 실패해도 후기는 저장된 채로 "판정 중"으로 남고, npm run classify:pending 으로 다시 판정할 수 있다.
+  after(async () => {
+    await classifyAndSaveReview(saved.id, body);
   });
-  if (error) return fail(t("review.failed"));
 
   return { status: "success", message: t("review.success") };
 }
