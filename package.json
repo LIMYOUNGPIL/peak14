@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --test tests/",
-    "classify:pending": "node scripts/classify-pending-reviews.mts"
+    "classify:pending": "node scripts/classify-pending-reviews.mts",
+    "takedown:process": "node scripts/process-deletion-requests.mts",
+    "links:check": "node scripts/check-external-links.mts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

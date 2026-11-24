@@ -29,14 +29,14 @@ export type Database = {
           Tables: {
             "deletion_requests": {
                   Row: {
-                    "contact_email": string | null,"id": string,"original_url": string,"received_at": string,"requester_type": string,"review_id": string | null,"status": string
+                    "contact_email": string | null,"id": string,"note": string | null,"original_url": string,"received_at": string,"requester_type": string,"review_id": string | null,"status": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "contact_email"?: string | null,"id"?: string,"original_url": string,"received_at"?: string,"requester_type": string,"review_id"?: string | null,"status"?: string
+                    "contact_email"?: string | null,"id"?: string,"note"?: string | null,"original_url": string,"received_at"?: string,"requester_type": string,"review_id"?: string | null,"status"?: string
                   }
                   Update: {
-                    "contact_email"?: string | null,"id"?: string,"original_url"?: string,"received_at"?: string,"requester_type"?: string,"review_id"?: string | null,"status"?: string
+                    "contact_email"?: string | null,"id"?: string,"note"?: string | null,"original_url"?: string,"received_at"?: string,"requester_type"?: string,"review_id"?: string | null,"status"?: string
                   }
                   Relationships: [
                     {

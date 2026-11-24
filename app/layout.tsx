@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 import Header from "@/components/Header";
 import { t } from "@/lib/i18n/messages";
 
@@ -28,6 +29,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Header />
         {children}
+        <footer className="border-t border-black/10 px-6 py-4 text-center text-xs text-zinc-500 dark:border-white/15">
+          <Link href="/takedown" className="underline">{t("takedown.footerLink")}</Link>
+        </footer>
       </body>
     </html>
   );
