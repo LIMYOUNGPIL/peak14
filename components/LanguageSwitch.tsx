@@ -34,7 +34,7 @@ export default function LanguageSwitch({ current, label, action }: Props) {
               router.refresh();
             })
           }
-          className={`whitespace-nowrap px-3 py-1 transition-colors ${
+          className={`whitespace-nowrap px-3 py-1.5 transition-colors sm:py-1 ${
             current === l ? "bg-foreground text-background" : "hover:bg-black/[.04] dark:hover:bg-white/[.06]"
           }`}
         >

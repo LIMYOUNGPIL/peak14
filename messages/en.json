@@ -38,6 +38,7 @@
   "explore": {
     "title": "The 14 Himalayan peaks",
     "subtitle": "The 8,000 m peaks of the Himalaya and Karakoram",
+    "hintTouch": "Drag to rotate; pinch to zoom and use two fingers to move. Tap a peak number",
     "hint": "Drag to rotate, right-drag or two fingers to move. Tap a peak",
     "cursorDrag": "Drag",
     "cursorOpen": "Open",

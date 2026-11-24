@@ -35,7 +35,10 @@ export default function PeakInfo({ mountain, onClose, locale }: Props) {
             {t("explore.title")} · {t("explore.subtitle")}
           </p>
         </div>
-        <p className="hx-hint">{t("explore.hint")}</p>
+        <p className="hx-hint">
+          <span className="hx-hint-fine">{t("explore.hint")}</span>
+          <span className="hx-hint-touch">{t("explore.hintTouch")}</span>
+        </p>
       </div>
     );
   }

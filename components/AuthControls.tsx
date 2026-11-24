@@ -10,7 +10,7 @@ import { createClient } from "@/lib/db/server";
 import { getT } from "@/lib/i18n/server";
 
 const buttonClass =
-  "rounded-full border border-black/15 px-3 py-1 text-sm transition-colors hover:bg-black/[.04] dark:border-white/20 dark:hover:bg-white/[.06]";
+  "rounded-full border border-black/15 px-3 py-1.5 text-sm sm:py-1 transition-colors hover:bg-black/[.04] dark:border-white/20 dark:hover:bg-white/[.06]";
 
 export default async function AuthControls() {
   // 세부 정보를 보여 주는 화면과 같은 방식(서버에 물어 확인)으로 로그인을 확인한다.
@@ -34,16 +34,16 @@ export default async function AuthControls() {
     .maybeSingle();
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
       {profile?.nickname && (
         <span className="hidden text-sm text-zinc-600 sm:inline dark:text-zinc-400">
           {profile.nickname}
         </span>
       )}
-      <Link href="/favorites" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+      <Link href="/favorites" className="py-1.5 text-sm text-zinc-600 hover:underline dark:text-zinc-400">
         {t("favorites.menu")}
       </Link>
-      <Link href="/account" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+      <Link href="/account" className="py-1.5 text-sm text-zinc-600 hover:underline dark:text-zinc-400">
         {t("account.menu")}
       </Link>
       <form action={logout}>

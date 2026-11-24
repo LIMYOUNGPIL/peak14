@@ -121,7 +121,7 @@ async function RouteDetail({
     ],
     [
       t("route.difficulty"),
-      <span key="difficulty" className="flex flex-col items-end gap-0.5">
+      <span key="difficulty" className="flex flex-col items-start gap-0.5 sm:items-end">
         <InfoValue locale={locale}
           value={
             route.difficulty === null
@@ -227,9 +227,9 @@ async function RouteDetail({
 
       <dl className="divide-y divide-black/10 rounded-xl border border-black/10 dark:divide-white/15 dark:border-white/15">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex justify-between gap-4 px-5 py-3">
+          <div key={label} className="flex flex-col gap-1 px-5 py-3 sm:flex-row sm:justify-between sm:gap-4">
             <dt className="text-zinc-500">{label}</dt>
-            <dd className="text-right font-medium">{value}</dd>
+            <dd className="font-medium sm:text-right">{value}</dd>
           </div>
         ))}
       </dl>

@@ -17,12 +17,12 @@ export default async function Header() {
   const t = makeT(locale);
   return (
     <header className="border-b border-white/15 bg-[#070d18]/90 text-white backdrop-blur">
-      <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
+      <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2.5 sm:gap-x-4 sm:gap-y-2 sm:px-6 sm:py-4">
         <Link href="/" className="text-lg font-bold tracking-tight">
           {t("common.siteName")}
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1">
           <LanguageSwitch current={locale} label={t("common.langLabel")} action={setLocale} />
           {/* 로그인 상태는 요청마다 달라지므로 Suspense 로 감싼다. */}
           <Suspense

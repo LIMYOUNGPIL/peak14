@@ -141,6 +141,11 @@ body {
   font-size: clamp(34px, 10.5vw, 160px); text-transform: uppercase; white-space: nowrap;
 }
 .hx-subtitle { margin: 12px 0 0; font-size: 16px; opacity: 0.85; }
+.hx-hint-touch { display: none; }
+@media (pointer: coarse) {
+  .hx-hint-fine { display: none; }
+  .hx-hint-touch { display: inline; }
+}
 .hx-hint { max-width: 260px; margin: 0; font-size: 15px; text-align: right; opacity: 0.8; }
 .hx-facts-wrap { width: min(447px, 36vw); pointer-events: auto; }
 .hx-facts { margin: 0; font-size: 15px; }
@@ -161,6 +166,11 @@ body {
 .hx-secondary { background: transparent; color: #fff; border: 1px solid var(--glass-line); }
 .hx-secondary:hover { background: rgba(255, 255, 255, 0.15); }
 @media (max-width: 760px) {
+  /* 휴대폰: 화면 높이에 맞춰 3D 영역을 채우고, 누르기 쉬운 크기로 키운다 */
+  .hx-root { min-height: max(520px, calc(100svh - 110px)); }
+  .hx-pill { padding: 11px 16px; }
+  .hx-primary, .hx-secondary { min-height: 44px; display: inline-flex; align-items: center; }
+  .hx-label, .hx-label.is-compact { padding: 8px 11px; }
   .hx-info { display: block; left: 18px; right: 18px; bottom: 86px; }
   .hx-hint { margin-top: 14px; text-align: left; max-width: none; }
   .hx-facts-wrap { width: 100%; margin-top: 16px; }

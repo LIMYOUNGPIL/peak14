@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
@@ -20,6 +20,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Peak14",
   description: "Himalayan 14 peaks trekking routes and safety information · 히말라야 14좌 트레킹 루트와 안전 정보",
+};
+
+// 휴대폰 화면: 기기 너비에 맞추고, 브라우저 주소창 색을 앱 머리글 색과 맞춘다.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#070d18",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -44,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 async function Footer() {
   const t = await getT();
   return (
-    <footer className="border-t border-black/10 px-6 py-4 text-center text-xs text-zinc-500 dark:border-white/15">
+    <footer className="border-t border-black/10 px-4 py-4 text-center text-xs sm:px-6 text-zinc-500 dark:border-white/15">
       <Link href="/takedown" className="underline">{t("takedown.footerLink")}</Link>
       <span className="mx-2">·</span>
       <span>{t("takedown.contact")} </span>
