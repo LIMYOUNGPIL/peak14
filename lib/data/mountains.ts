@@ -54,13 +54,18 @@ const HRA_HEALTH =
   "히말라야 구조협회(HRA) https://www.himalayanrescue.org/health-problems (확인일 2026-11-23, 페이지에 갱신일 표시 없음)";
 
 // 히말라야 구조협회(HRA)의 고산병 안내. 3,000 m 이상을 걷는 루트에 공통으로 해당하는 일반 안내이며,
-// 루트별로 따로 만든 안내가 아니다. 영어 원문 그대로 번역하지 않고 쓴다.
+// 루트별로 따로 만든 안내가 아니다. 영어 원문은 그대로 두고, 아래 textKo 는 사용자 요청으로 사람이 옮겨 붙인 참고용 번역이다(원문 옆에 함께 표시).
 const HRA_SAFETY_NOTES = [
-  { text: "…after 3000 meters your sleeping altitude is no more than 300 meters to 400 meters higher than the previous day's sleeping altitude", source: HRA_ALTITUDE },
-  { text: "a willingness to rest or DESCEND if symptoms worsen", source: HRA_ALTITUDE },
-  { text: "Never ascend with obvious symptoms.", source: HRA_HEALTH },
-  { text: "Descend if symptoms increase.", source: HRA_HEALTH },
-  { text: "every second or third day should be rest day for acclimatization", source: HRA_HEALTH },
+  { text: "…after 3000 meters your sleeping altitude is no more than 300 meters to 400 meters higher than the previous day's sleeping altitude",
+    textKo: "…해발 3,000 m를 넘은 뒤에는 잠자는 고도가 전날 잠잔 고도보다 300~400 m를 넘게 높아지지 않아야 합니다.", source: HRA_ALTITUDE },
+  { text: "a willingness to rest or DESCEND if symptoms worsen",
+    textKo: "증상이 나빠지면 쉬거나 내려갈(하강할) 준비가 되어 있어야 합니다.", source: HRA_ALTITUDE },
+  { text: "Never ascend with obvious symptoms.",
+    textKo: "뚜렷한 증상이 있을 때는 절대 더 올라가지 마세요.", source: HRA_HEALTH },
+  { text: "Descend if symptoms increase.",
+    textKo: "증상이 심해지면 내려가세요.", source: HRA_HEALTH },
+  { text: "every second or third day should be rest day for acclimatization",
+    textKo: "고소 적응을 위해 이틀이나 사흘에 하루는 쉬는 날로 두어야 합니다.", source: HRA_HEALTH },
 ].map((n) => ({ ...n, language: "en" as const, asOf: "2026-11-23" }));
 
 const annapurnaCircuit: Route = {

@@ -13,7 +13,8 @@ export type Measure = number | { min: number; max: number };
 // 안전 유의사항 한 건. 공식 기관이나 현지 자료로 등록한 것만 넣는다.
 // AI가 새로 만들거나 바꾸지 않는다.
 export type SafetyNote = {
-  text: string; // 유의사항 내용 (등록된 자료 그대로. 번역하지 않는다)
+  text: string; // 유의사항 내용 (등록된 자료 원문 그대로. 원문은 고치지 않는다)
+  textKo?: string; // 한국어 번역 (사람이 옮겨 등록한 참고용. 있으면 원문 아래에 함께 보여 준다)
   language: "ko" | "en"; // 원문 언어. 영어 원문은 영어 그대로 보여 주고 그 사실을 표시한다
   source: string; // 출처
   asOf: string; // 정보 기준일 (YYYY-MM-DD)

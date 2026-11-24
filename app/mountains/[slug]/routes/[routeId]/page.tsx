@@ -175,6 +175,14 @@ async function RouteDetail({
             {route.safetyNotes.map((note) => (
               <li key={note.text}>
                 {note.text}
+                {note.textKo && (
+                  <span className="mt-1 block text-[15px]">
+                    <span className="mr-1 rounded-full bg-black/[.06] px-2 py-0.5 text-xs text-zinc-500 dark:bg-white/[.1]">
+                      {t("route.koTranslation")}
+                    </span>
+                    {note.textKo}
+                  </span>
+                )}
                 <span className="block text-sm text-zinc-500">
                   {note.language === "en" && <>{t("route.originalEnglish")} · </>}
                   {t("route.source")}: {note.source} · {t("route.asOf")}:{" "}
