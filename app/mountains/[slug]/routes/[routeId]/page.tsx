@@ -70,6 +70,8 @@ async function RouteDetail({
   const reviews = await getRouteReviews(route.id);
   const isFavorite = (await getMyFavorites(user.id)).some((f) => f.route_id === route.id);
   const currentYear = new Date().getUTCFullYear();
+  // 개요의 출처가 주소(https)가 아니면 업체 안내를 정리한 글이다. (위키 번역글과 안내 문구를 구분한다)
+  const overviewIsOperator = route.overview ? !route.overview.source.startsWith("https://") : false;
 
   // 값이 없으면 InfoValue 가 "정보 없음"으로 보여 준다.
   const rows: [string, ReactNode][] = [
@@ -88,6 +90,22 @@ async function RouteDetail({
         value={formatMeasure(route.durationDays)}
         unit={t("route.unitDays")}
       />,
+    ],
+    [
+      t("route.walkHours"),
+      <InfoValue locale={locale}
+        key="walkHours"
+        value={formatMeasure(route.dailyWalkHours ?? null)}
+        unit={t("route.unitHours")}
+      />,
+    ],
+    [
+      t("route.bestSeason"),
+      <InfoValue locale={locale} key="bestSeason" value={route.bestSeason} />,
+    ],
+    [
+      t("route.permits"),
+      <InfoValue locale={locale} key="permits" value={route.permits} />,
     ],
     [
       t("route.lodging"),
@@ -157,6 +175,32 @@ async function RouteDetail({
       {/* 루트 한눈에 보기: 산 위치 지도와 고도 그래프 (첫 화면과 같은 새벽 노을빛) */}
       <RouteVisual mountain={mountain} route={route} locale={locale} />
 
+      {/* 업체 안내를 여러 곳 비교해 정리한 내용: 읽은 업체 주소를 모두 보여 준다 */}
+      {route.operatorInfo && (
+        <section className="mb-8 rounded-xl bg-black/[.04] p-5 dark:bg-white/[.06]">
+          <h2 className="mb-3 text-lg font-semibold">{t("route.operatorTitle")}</h2>
+          <div className="space-y-3 text-[15px] leading-7">
+            {route.operatorInfo.text.split("\n").map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+          </div>
+          <p className="mt-4 border-t border-black/10 pt-3 text-xs text-zinc-500 dark:border-white/15">
+            {t("route.overviewNoteOperator")} ({route.operatorInfo.asOf})
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            {route.operatorInfo.sources
+              .filter((src) => src.url.startsWith("https://"))
+              .map((src) => (
+                <li key={src.url}>
+                  <a href={src.url} target="_blank" rel="noopener noreferrer" className="underline">
+                    {src.name}
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </section>
+      )}
+
       {/* 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글 (AI가 옮겼다는 표시와 원문 링크 포함) */}
       {route.overview && (
         <section className="mb-8 rounded-xl bg-black/[.04] p-5 dark:bg-white/[.06]">
@@ -167,8 +211,8 @@ async function RouteDetail({
             ))}
           </div>
           <p className="mt-4 border-t border-black/10 pt-3 text-xs text-zinc-500 dark:border-white/15">
-            {route.operatorRange ? t("route.overviewNoteOperator") : t("route.overviewNote")}{" "}
-            {!route.operatorRange && <a
+            {overviewIsOperator ? t("route.overviewNoteOperator") : t("route.overviewNote")}{" "}
+            {!overviewIsOperator && <a
               href={route.overview.source}
               target="_blank"
               rel="noopener noreferrer"

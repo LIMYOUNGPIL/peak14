@@ -41,7 +41,7 @@ function Chart({ route, locale }: { route: Route; locale: Locale }) {
   if (!profile || profile.points.length < 2) {
     return (
       <p className="rounded-xl border border-dashed border-white/25 p-4 text-sm text-white/75">
-        {t("common.noInfo")} — {t("visual.chartNone")}
+        {t("common.noInfo")} — {route.operatorRange ? t("visual.chartNoneOperator") : t("visual.chartNone")}
       </p>
     );
   }

@@ -7,6 +7,7 @@
 // 서버 전용: 화면(브라우저) 코드가 이 파일을 직접 불러오면 빌드에서 막힌다.
 import "server-only";
 import type { Mountain, Route } from "@/types/mountain";
+import { EXTRA, PATCHES } from "./operator-routes";
 
 // 산 정보의 출처 (14좌 공통)
 //  - 높이·나라: 위키백과 "Eight-thousander" 목록 표 (높이는 이 표가 인용한 Peakbagger 값)
@@ -96,7 +97,7 @@ const annapurnaCircuit: Route = {
 
 // 히말라야·카라코람 8,000m 14좌.
 // 루트 정보는 출처를 확인한 뒤 routes 에 추가한다. 출처가 확실하지 않은 산은 routes 를 비워 둔다.
-export const mountains: Mountain[] = [
+const baseMountains: Mountain[] = [
   { slug: "everest", nameKo: "에베레스트", nameEn: "Everest", routes: [{
       id: "everest-base-camp-trek",
       name: "에베레스트 베이스캠프 트레킹 (남쪽, 네팔)",
@@ -337,6 +338,27 @@ export const mountains: Mountain[] = [
     elevationM: 8027, lat: 28.35222222, lon: 85.77972222, countries: [CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Shishapangma", "시샤팡마는 시샤스방마, 시아바방마(중국어 希夏邦马, Xīxiàbāngmǎ)라고도 불립니다. 세계에서 열네 번째로 높으며, 8,000m 봉우리 가운데 가장 낮은 산입니다. 전부 티베트 안에 있습니다.") },
 ];
+
+// 업체 안내를 비교한 값을 기존 루트에 채우고, 새 루트를 산 아래에 붙인다. (lib/data/operator-routes.ts)
+export const mountains: Mountain[] = baseMountains.map((mt) => ({
+  ...mt,
+  routes: [
+    ...mt.routes.map((rt) => ({ ...rt, ...(PATCHES[rt.id] ?? {}) })),
+    ...(EXTRA[mt.slug] ?? []).map(
+      (e): Route => ({
+        ...e,
+        lodgingCount: null,
+        amenities: e.amenities ?? null,
+        difficulty: null,
+        difficultySource: null,
+        difficultyAsOf: null,
+        safetyNotes: HRA_SAFETY_NOTES,
+        overview: null,
+        asOf: "2026-11-24",
+      }),
+    ),
+  ],
+}));
 
 export function getMountain(slug: string): Mountain | undefined {
   return mountains.find((m) => m.slug === slug);

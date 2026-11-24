@@ -27,6 +27,9 @@ export type Route = {
   distanceKm: Measure | null; // 총 거리(km)
   durationDays: Measure | null; // 소요 시간(일)
   lodgingCount: number | null; // 숙소 개수
+  dailyWalkHours?: Measure | null; // 하루 걷는 시간(시간). 업체 안내를 비교한 범위일 수 있다
+  bestSeason?: string | null; // 추천 시기 (출처가 적은 그대로)
+  permits?: string | null; // 허가·규정 요약 (출처가 적은 그대로)
   amenities: string[] | null; // 편의시설
   difficulty: Difficulty | null; // 난이도 (루트 등록 시 근거와 함께 직접 부여)
   difficultySource: string | null; // 난이도 근거(출처). 근거가 없으면 난이도도 null
@@ -39,6 +42,8 @@ export type Route = {
     source: string;
     asOf: string;
   } | null;
+  // 여러 트레킹 업체 안내를 비교해 정리한 글과 읽은 업체 주소 (위키 개요와 별도로 보여 준다)
+  operatorInfo?: { text: string; sources: { name: string; url: string }[]; asOf: string } | null;
   // true 이면 값이 여러 트레킹 업체 안내를 비교한 범위다. (업체 홍보 자료라 서로 다르고 날씨·컨디션에 따라 달라질 수 있어 화면에 그 사실을 밝힌다)
   operatorRange?: boolean;
   // 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글. 출처 링크와 기준일을 함께 가진다. 없으면 null

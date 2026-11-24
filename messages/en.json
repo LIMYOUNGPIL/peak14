@@ -156,7 +156,12 @@
     "unitPlaces": " places",
     "koTranslation": "Korean translation · for reference",
     "rangeNote": "This is a range compared across operator itineraries. Operators disagree, so we show a range instead of an average; it can change with weather and your condition.",
-    "overviewNoteOperator": "Summarized from operator itinerary pages (numbers and names only, not copied text). These are marketing materials and may contain errors. Source URLs are listed below."
+    "overviewNoteOperator": "Summarized from operator itinerary pages (numbers and names only, not copied text). These are marketing materials and may contain errors. Source URLs are listed below.",
+    "walkHours": "Walking per day",
+    "bestSeason": "Best season",
+    "permits": "Permits and rules",
+    "unitHours": " hours",
+    "operatorTitle": "Operator itineraries compared"
   },
   "takedown": {
     "title": "Request removal of an external article",
@@ -217,7 +222,8 @@
     "chartNote": "Only points whose elevation is given in the source are joined, in walking order. Distances between points and ups and downs are not reflected.",
     "chartNone": "Fewer than 2 points with a known elevation were found for this route, so no graph is drawn.",
     "peak": "Summit",
-    "meters": "{n} m"
+    "meters": "{n} m",
+    "chartNoneOperator": "Operators give different elevations for each stop, so no single line is drawn; the ranges are listed in the operator comparison below."
   },
   "account": {
     "menu": "Account",
