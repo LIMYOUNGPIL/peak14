@@ -353,6 +353,14 @@ function World({
   const viewport = useThree((s) => s.size);
   const homeDistance = homeDistanceFor(viewport.width / viewport.height);
   const exploreStart = useRef<number | null>(null);
+
+  // 방향키로도 지형 위를 옮겨 다닌다. (마우스는 오른쪽 버튼 또는 Shift+드래그, 터치는 두 손가락 드래그)
+  useEffect(() => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+    controls.listenToKeyEvents(window as unknown as HTMLElement);
+    return () => controls.stopListenToKeyEvents();
+  }, []);
   const [interacted, setInteracted] = useState(false); // 한 번이라도 손댔으면 자동 회전을 멈춘다
   const frame = useMemo(() => makeFrame(terrain.meta.bounds), [terrain]);
 
@@ -445,7 +453,10 @@ function World({
         dampingFactor={0.08}
         rotateSpeed={0.6}
         zoomSpeed={0.8}
+        enablePan
+        panSpeed={0.9}
         screenSpacePanning={false}
+        keyPanSpeed={14}
         minDistance={1.4}
         maxDistance={Math.max(26, homeDistance * 1.2)}
         minPolarAngle={0.12}
