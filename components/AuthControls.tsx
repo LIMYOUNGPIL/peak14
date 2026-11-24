@@ -43,6 +43,9 @@ export default async function AuthControls() {
       <Link href="/favorites" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
         {t("favorites.menu")}
       </Link>
+      <Link href="/account" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+        {t("account.menu")}
+      </Link>
       <form action={logout}>
         <button type="submit" className={buttonClass}>
           {t("auth.logout")}

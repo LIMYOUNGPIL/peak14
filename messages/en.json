@@ -215,5 +215,20 @@
     "chartNone": "Fewer than 2 points with a known elevation were found for this route, so no graph is drawn.",
     "peak": "Summit",
     "meters": "{n} m"
+  },
+  "account": {
+    "menu": "Account",
+    "title": "Your account and privacy",
+    "privacyTitle": "What we collect and why",
+    "collect": "With email login we receive your email and nickname; with social login only the account ID, email and nickname. We do not store passwords ourselves; the login service (Supabase) handles them.",
+    "notCollect": "We do not collect national ID numbers, phone numbers or payment details. Phone numbers and emails in reviews are filtered out before posting.",
+    "ai": "Only the filtered review text is sent to OpenAI to classify it as positive, negative or neutral. Nickname, account, email and star rating are not sent.",
+    "display": "Reviews show your nickname, never your real name.",
+    "deleteTitle": "Delete account",
+    "deleteBody": "Deleting your account permanently removes your profile, your reviews and your favorites. This cannot be undone.",
+    "confirmLabel": "Type DELETE to confirm",
+    "confirmError": "Please type DELETE exactly.",
+    "failed": "Could not delete the account. Please try again later.",
+    "deleteButton": "Delete my account"
   }
 }
