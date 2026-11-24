@@ -167,15 +167,15 @@ async function RouteDetail({
             ))}
           </div>
           <p className="mt-4 border-t border-black/10 pt-3 text-xs text-zinc-500 dark:border-white/15">
-            {t("route.overviewNote")}{" "}
-            <a
+            {route.operatorRange ? t("route.overviewNoteOperator") : t("route.overviewNote")}{" "}
+            {!route.operatorRange && <a
               href={route.overview.source}
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
             >
               {t("route.overviewSource")}
-            </a>{" "}
+            </a>}{" "}
             ({route.overview.asOf})
           </p>
         </section>
@@ -189,6 +189,9 @@ async function RouteDetail({
           </div>
         ))}
       </dl>
+      {route.operatorRange && (
+        <p className="mt-2 text-xs text-zinc-500">{t("route.rangeNote")}</p>
+      )}
 
       <section className="mt-8">
         <h2 className="mb-2 text-lg font-semibold">{t("route.safetyTitle")}</h2>

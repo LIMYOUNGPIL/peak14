@@ -39,6 +39,8 @@ export type Route = {
     source: string;
     asOf: string;
   } | null;
+  // true 이면 값이 여러 트레킹 업체 안내를 비교한 범위다. (업체 홍보 자료라 서로 다르고 날씨·컨디션에 따라 달라질 수 있어 화면에 그 사실을 밝힌다)
+  operatorRange?: boolean;
   // 루트 개요: 출처에 적힌 사실을 한국어로 옮긴 글. 출처 링크와 기준일을 함께 가진다. 없으면 null
   overview: { text: string; source: string; asOf: string } | null;
   source: string | null; // 출처

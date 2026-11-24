@@ -154,7 +154,9 @@
     "unitKm": " km",
     "unitDays": " days",
     "unitPlaces": " places",
-    "koTranslation": "Korean translation · for reference"
+    "koTranslation": "Korean translation · for reference",
+    "rangeNote": "This is a range compared across operator itineraries. Operators disagree, so we show a range instead of an average; it can change with weather and your condition.",
+    "overviewNoteOperator": "Summarized from operator itinerary pages (numbers and names only, not copied text). These are marketing materials and may contain errors. Source URLs are listed below."
   },
   "takedown": {
     "title": "Request removal of an external article",
