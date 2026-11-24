@@ -17,9 +17,9 @@ import path from "node:path";
 import { PNG } from "pngjs";
 
 // ---- 설정 --------------------------------------------------------------
-const ZOOM = 7; // 타일 확대 단계. 7 이면 이 지역에서 약 1km 간격이다.
+const ZOOM = 8; // 타일 확대 단계. 8 이면 이 지역에서 약 0.5km 간격이다.
 const BOUNDS = { lonW: 73.2, lonE: 89.2, latS: 27.0, latN: 36.6 };
-const STEP = 0.02; // 고도 파일의 격자 간격(도). 약 2km
+const STEP = 0.01; // 고도 파일의 격자 간격(도). 약 1km
 const COLOR_STEP = 0.01; // 색 이미지의 격자 간격(도). 약 1km
 const TILE_URL = (z, x, y) =>
   `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
@@ -161,6 +161,22 @@ function baseColor(e) {
   return RAMP[RAMP.length - 1][1];
 }
 
+// 부드러운 무작위 변화(값 잡음): 같은 고도라도 색이 조금씩 달라 보이게 한다. 고도 자료가 아니라 "질감"일 뿐이다.
+const hash = (x, y) => {
+  let h = (x * 374761393 + y * 668265263) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+};
+function valueNoise(x, y) {
+  const ix = Math.floor(x), iy = Math.floor(y);
+  const fx = x - ix, fy = y - iy;
+  const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+  const a = hash(ix, iy), b = hash(ix + 1, iy), c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1);
+  return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
+}
+const fbm = (x, y) => 0.5 * valueNoise(x, y) + 0.3 * valueNoise(x * 2.1, y * 2.1) + 0.2 * valueNoise(x * 4.3, y * 4.3);
+const at = (i, j) => grid[Math.min(CH - 1, Math.max(0, j)) * CW + Math.min(CW - 1, Math.max(0, i))];
+
 const png = new PNG({ width: CW, height: CH });
 const mPerDegLat = 111320;
 for (let j = 0; j < CH; j++) {
@@ -169,26 +185,40 @@ for (let j = 0; j < CH; j++) {
   const dx = COLOR_STEP * mPerDegLat * Math.cos((lat * Math.PI) / 180);
   for (let i = 0; i < CW; i++) {
     const e = grid[j * CW + i];
-    const eL = grid[j * CW + Math.max(0, i - 1)];
-    const eR = grid[j * CW + Math.min(CW - 1, i + 1)];
-    const eU = grid[Math.max(0, j - 1) * CW + i];
-    const eD = grid[Math.min(CH - 1, j + 1) * CW + i];
-    const gx = (eR - eL) / (2 * dx);
-    const gy = (eD - eU) / (2 * dy);
+    const gx = (at(i + 1, j) - at(i - 1, j)) / (2 * dx);
+    const gy = (at(i, j + 1) - at(i, j - 1)) / (2 * dy);
     const slope = Math.atan(Math.hypot(gx, gy)) * (180 / Math.PI); // 도(°)
 
+    // 오목함(골짜기)과 볼록함(능선): 주변 평균 고도와 비교한다. 골짜기는 살짝 어둡게, 능선은 밝게.
+    const R = 4;
+    const mean = (at(i - R, j) + at(i + R, j) + at(i, j - R) + at(i, j + R) + at(i - R, j - R) + at(i + R, j + R) + at(i - R, j + R) + at(i + R, j - R)) / 8;
+    const curv = Math.max(-1, Math.min(1, (e - mean) / 350)); // -1 골짜기 ~ +1 능선
+
     let color = baseColor(e);
+    // 북쪽 고원(티베트 쪽)은 더 건조해서 황토색이 돈다. (위도로만 계산)
+    color = mix(color, [160, 142, 112], smooth(30.5, 33.5, lat) * smooth(2500, 4200, e) * 0.55);
     // 가파른 곳은 암석이 드러난다.
     color = mix(color, [112, 106, 100], smooth(28, 48, slope) * smooth(1500, 3500, e));
-    // 눈: 높을수록 많이 쌓이고, 아주 가파른 절벽에는 덜 쌓인다.
-    const snowLine = 5300 - smooth(0, 1, 0) * 0;
-    const snow = smooth(snowLine - 300, snowLine + 700, e) * (1 - smooth(42, 62, slope) * 0.85);
+    // 질감: 같은 고도에서도 색이 조금씩 다르게
+    const n = fbm(i * 0.09, j * 0.09) - 0.5;
+    const tex = 1 + n * 0.28;
+    color = color.map((v) => v * tex);
+    // 눈: 높을수록 많이 쌓이고, 아주 가파른 절벽에는 덜 쌓인다. 능선과 평평한 곳에 더 쌓인다.
+    const snowLine = 5300 + n * 260;
+    let snow = smooth(snowLine - 300, snowLine + 700, e) * (1 - smooth(42, 62, slope) * 0.85);
+    snow = clamp01(snow + curv * 0.06);
     color = mix(color, [244, 247, 250], clamp01(snow));
+    // 빙하: 눈선 근처의 완만한 골짜기는 푸르스름한 얼음색
+    const ice = smooth(4300, 5000, e) * (1 - smooth(5900, 6600, e)) * smooth(0.0, -0.35, curv) * (1 - smooth(8, 20, slope)) * 0.7;
+    color = mix(color, [186, 210, 228], clamp01(ice));
+    // 골짜기·능선 명암
+    const shade = 1 + curv * 0.12;
+    color = color.map((v) => v * shade);
 
     const o = (j * CW + i) * 4;
-    png.data[o] = Math.round(color[0]);
-    png.data[o + 1] = Math.round(color[1]);
-    png.data[o + 2] = Math.round(color[2]);
+    png.data[o] = Math.round(Math.min(255, color[0]));
+    png.data[o + 1] = Math.round(Math.min(255, color[1]));
+    png.data[o + 2] = Math.round(Math.min(255, color[2]));
     png.data[o + 3] = 255;
   }
 }

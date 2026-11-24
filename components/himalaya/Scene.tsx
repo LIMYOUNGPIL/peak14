@@ -44,20 +44,166 @@ const BACKGROUND = "#070d18";
 const HOME_TARGET = new THREE.Vector3(0, 0, -0.4);
 const HOME_DISTANCE = 16;
 const HOME_DIRECTION = new THREE.Vector3(0, 0.7, 0.714).normalize();
-const INTRO_START = new THREE.Vector3(0, 52, 8);
+// 진입 연출: 높은 곳에서 시작해 전경 자리로 내려오며, 자동 회전과 같은 방향으로 천천히 돌아 들어온다.
+const INTRO_FROM = { radius: 46, polar: 0.3, azimuth: 1.15 };
+const HOME_POLAR = Math.acos(HOME_DIRECTION.y);
+const HOME_AZIMUTH = Math.atan2(HOME_DIRECTION.x, HOME_DIRECTION.z);
+const AUTO_ROTATE_SPEED = 0.35;
+const ROTATE_RAMP_SECONDS = 3.5; // 도착한 뒤 자동 회전이 서서히 시작되는 시간
 const POLE = 0.6; // 표지 기둥 높이
 const POLE_SELECTED = 1;
-const INTRO_SECONDS = 4;
+const INTRO_SECONDS = 6.5;
 const FOCUS_DISTANCE = 2.6;
 
 // 화면이 세로로 길수록(휴대폰) 14좌가 모두 들어오도록 더 멀리서 본다.
 const homeDistanceFor = (aspect: number) =>
   HOME_DISTANCE * THREE.MathUtils.clamp(1.35 / aspect, 1, 2.4);
 
-const easeInOutCubic = (t: number) =>
-  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+// 처음엔 빠르고 끝에서는 속도가 0으로 부드럽게 멈춘다. (도착 뒤 자동 회전이 이어서 서서히 시작된다)
+const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+const smoothstep = (t: number) => t * t * (3 - 2 * t);
 
 // ---- 지형 ------------------------------------------------------------------
+// 두 겹으로 만든다.
+//  1) 바닥 땅: 자료 구역 밖으로 지평선까지 이어지는 부드러운 땅. 가장자리 고도를 넓게 평균 낸 값으로 만들고 한 가지 흙색으로 칠한다.
+//     (실제 지형이 아니라 이어 붙인 "배경"이다. 화면 아래에 그 사실을 적는다.)
+//  2) 자료 지형: 실제 고도·색 자료. 가장자리 0.7도는 서서히 투명해져서 바닥 땅과 끊김 없이 이어진다.
+const OUTER_RINGS = 14; // 바깥으로 이어 붙이는 칸의 수
+const OUTER_GROWTH = 1.6; // 바깥으로 갈수록 칸이 이만큼씩 커진다
+const OUTER_DROP = 0.5; // 가장 먼 곳에서는 가장자리 고도의 (1 - 이 값)배까지 낮아진다
+const FEATHER_DEG = 1.4; // 자료 지형의 가장자리가 서서히 사라지는 폭(도)
+const BASE_SINK = 0.5; // 바닥 땅을 자료 지형보다 이만큼 아래에 둔다(장면 단위). 자료 지형 아래에 가려지게 하려는 값
+
+const smooth01 = (a: number, b: number, v: number) => {
+  const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+};
+
+// 가로·세로 이동 평균으로 흐릿하게 만든 고도
+function blurHeights(heights: Uint16Array, W: number, H: number, radius: number) {
+  const tmp = new Float32Array(W * H);
+  const out = new Float32Array(W * H);
+  for (let j = 0; j < H; j++) {
+    let sum = 0;
+    let n = 0;
+    for (let i = 0; i < Math.min(W, radius); i++) { sum += heights[j * W + i]; n++; }
+    for (let i = 0; i < W; i++) {
+      const add = i + radius;
+      const sub = i - radius - 1;
+      if (add < W) { sum += heights[j * W + add]; n++; }
+      if (sub >= 0) { sum -= heights[j * W + sub]; n--; }
+      tmp[j * W + i] = sum / n;
+    }
+  }
+  for (let i = 0; i < W; i++) {
+    let sum = 0;
+    let n = 0;
+    for (let j = 0; j < Math.min(H, radius); j++) { sum += tmp[j * W + i]; n++; }
+    for (let j = 0; j < H; j++) {
+      const add = j + radius;
+      const sub = j - radius - 1;
+      if (add < H) { sum += tmp[add * W + i]; n++; }
+      if (sub >= 0) { sum -= tmp[sub * W + i]; n--; }
+      out[j * W + i] = sum / n;
+    }
+  }
+  return out;
+}
+
+type Cell = { pos: number; idx: number; out: number };
+
+// 한 축의 격자: 안쪽(자료가 있는 구간)은 stride 칸마다. withOuter 이면 바깥으로 점점 넓은 칸을 이어 붙인다.
+function buildAxis(count: number, stride: number, toScene: (idx: number) => number, withOuter: boolean): Cell[] {
+  const inner: Cell[] = [];
+  for (let k = 0; ; k += stride) {
+    const idx = Math.min(k, count - 1);
+    inner.push({ pos: toScene(idx), idx, out: 0 });
+    if (idx === count - 1) break;
+  }
+  if (!withOuter) return inner;
+  const dir = Math.sign(inner[1].pos - inner[0].pos);
+  const first = Math.abs(inner[1].pos - inner[0].pos);
+  const lo: Cell[] = [];
+  const hi: Cell[] = [];
+  let d = 0;
+  for (let r = 1; r <= OUTER_RINGS; r++) {
+    d += first * Math.pow(OUTER_GROWTH, r - 1);
+    const out = r / OUTER_RINGS;
+    lo.unshift({ pos: inner[0].pos - dir * d, idx: 0, out });
+    hi.push({ pos: inner[inner.length - 1].pos + dir * d, idx: count - 1, out });
+  }
+  return [...lo, ...inner, ...hi];
+}
+
+function buildGeometry(terrain: TerrainData, frame: Frame, stride: number, base: boolean) {
+  const { heights, meta } = terrain;
+  const W = meta.width;
+  const H = meta.height;
+  const { bounds, step } = meta;
+  const cols = buildAxis(W, stride, (i) => frame.toX(bounds.lonW + i * step), base);
+  const rows = buildAxis(H, stride, (j) => frame.toZ(bounds.latN - j * step), base);
+  const nC = cols.length;
+  const nR = rows.length;
+  const blurred = blurHeights(heights, W, H, 40);
+
+  const positions = new Float32Array(nC * nR * 3);
+  const uvs = new Float32Array(nC * nR * 2);
+  const rgba = base ? null : new Float32Array(nC * nR * 4);
+  for (let r = 0; r < nR; r++) {
+    const row = rows[r];
+    for (let c = 0; c < nC; c++) {
+      const col = cols[c];
+      const k = r * nC + c;
+      const at = row.idx * W + col.idx;
+      const out = Math.max(col.out, row.out);
+      // 자료 구역 가장자리까지의 거리(도). 바깥 칸은 인덱스가 가장자리에 고정되어 0 이다.
+      const edgeDeg = Math.min(col.idx, W - 1 - col.idx, row.idx, H - 1 - row.idx) * step;
+      const w = smooth01(0, FEATHER_DEG, edgeDeg);
+      const fall = 1 - OUTER_DROP * out * out * (3 - 2 * out);
+      let h: number;
+      if (base) {
+        // 바닥 땅: 흐릿한 고도. 자료 구역 안쪽에서는 자료 지형 아래로 가라앉혀 가려지게 한다.
+        h = frame.toY(blurred[at]) * fall - BASE_SINK * w;
+      } else {
+        h = frame.toY(blurred[at] + (heights[at] - blurred[at]) * w);
+      }
+      positions[k * 3] = col.pos;
+      positions[k * 3 + 1] = h;
+      positions[k * 3 + 2] = row.pos;
+      uvs[k * 2] = col.idx / (W - 1);
+      uvs[k * 2 + 1] = 1 - row.idx / (H - 1);
+      if (rgba) {
+        rgba[k * 4] = rgba[k * 4 + 1] = rgba[k * 4 + 2] = 1;
+        rgba[k * 4 + 3] = smooth01(0.02, FEATHER_DEG * 0.95, edgeDeg);
+      }
+    }
+  }
+  const indices = new Uint32Array((nC - 1) * (nR - 1) * 6);
+  let p = 0;
+  for (let r = 0; r < nR - 1; r++) {
+    for (let c = 0; c < nC - 1; c++) {
+      const a = r * nC + c;
+      const b = a + 1;
+      const d = a + nC;
+      const e = d + 1;
+      indices[p++] = a;
+      indices[p++] = d;
+      indices[p++] = b;
+      indices[p++] = b;
+      indices[p++] = d;
+      indices[p++] = e;
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+  if (rgba) geometry.setAttribute("color", new THREE.BufferAttribute(rgba, 4));
+  geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
 function Terrain({
   terrain,
   frame,
@@ -67,99 +213,37 @@ function Terrain({
   frame: Frame;
   stride: number;
 }) {
-  const { geometry, texture, alphaMap } = useMemo(() => {
-    const { heights, meta } = terrain;
-    const W = meta.width;
-    const H = meta.height;
-    const { bounds, step } = meta;
-    const cols = Math.floor((W - 1) / stride) + 1;
-    const rows = Math.floor((H - 1) / stride) + 1;
-
-    const positions = new Float32Array(cols * rows * 3);
-    const uvs = new Float32Array(cols * rows * 2);
-    for (let r = 0; r < rows; r++) {
-      const j = Math.min(r * stride, H - 1);
-      const lat = bounds.latN - j * step;
-      for (let c = 0; c < cols; c++) {
-        const i = Math.min(c * stride, W - 1);
-        const k = r * cols + c;
-        positions[k * 3] = frame.toX(bounds.lonW + i * step);
-        positions[k * 3 + 1] = frame.toY(heights[j * W + i]);
-        positions[k * 3 + 2] = frame.toZ(lat);
-        uvs[k * 2] = i / (W - 1);
-        uvs[k * 2 + 1] = 1 - j / (H - 1);
-      }
-    }
-    const indices = new Uint32Array((cols - 1) * (rows - 1) * 6);
-    let p = 0;
-    for (let r = 0; r < rows - 1; r++) {
-      for (let c = 0; c < cols - 1; c++) {
-        const a = r * cols + c;
-        const b = a + 1;
-        const d = a + cols;
-        const e = d + 1;
-        indices[p++] = a;
-        indices[p++] = d;
-        indices[p++] = b;
-        indices[p++] = b;
-        indices[p++] = d;
-        indices[p++] = e;
-      }
-    }
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-    geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-    geometry.computeVertexNormals();
-    geometry.computeBoundingSphere();
-
+  const { surface, ground, texture } = useMemo(() => {
+    const surface = buildGeometry(terrain, frame, stride, false);
+    // 바닥 땅은 멀리 있어 거칠어도 되므로 조금 성기게 만든다.
+    const ground = buildGeometry(terrain, frame, Math.max(stride, 4), true);
     const texture = new THREE.Texture(terrain.color);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 8;
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.needsUpdate = true;
-
-    // 지형이 네모난 판처럼 보이지 않도록, 가장자리와 모서리가 타원 모양으로 어둠 속에 녹아들게 한다.
-    // (중심에서 멀어질수록 투명해지고, 모서리는 완전히 사라진다. 14좌는 모두 불투명한 안쪽에 있다.)
-    const size = 512;
-    const data = new Uint8Array(size * size * 4);
-    const smooth = (a: number, b: number, v: number) => {
-      const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
-      return t * t * (3 - 2 * t);
-    };
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const r = Math.hypot((2 * x) / (size - 1) - 1, (2 * y) / (size - 1) - 1);
-        const a = Math.round(255 * (1 - smooth(0.84, 1.24, r)));
-        const o = (y * size + x) * 4;
-        data[o] = data[o + 1] = data[o + 2] = a;
-        data[o + 3] = 255;
-      }
-    }
-    const alphaMap = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-    alphaMap.needsUpdate = true;
-
-    return { geometry, texture, alphaMap };
+    return { surface, ground, texture };
   }, [terrain, frame, stride]);
 
   useEffect(
     () => () => {
-      geometry.dispose();
+      surface.dispose();
+      ground.dispose();
       texture.dispose();
-      alphaMap.dispose();
     },
-    [geometry, texture, alphaMap],
+    [surface, ground, texture],
   );
 
   return (
-    <mesh geometry={geometry}>
-      <meshStandardMaterial
-        map={texture}
-        alphaMap={alphaMap}
-        transparent
-        roughness={1}
-        metalness={0}
-      />
-    </mesh>
+    <>
+      <mesh geometry={ground} renderOrder={0}>
+        <meshStandardMaterial color="#7f7660" roughness={1} metalness={0} />
+      </mesh>
+      <mesh geometry={surface} renderOrder={1}>
+        <meshStandardMaterial map={texture} vertexColors transparent roughness={1} metalness={0} />
+      </mesh>
+    </>
   );
 }
 
@@ -252,7 +336,7 @@ function CameraRig({
 
   // 처음 위치: 멀리 위에서 시작한다.
   useEffect(() => {
-    camera.position.copy(INTRO_START);
+    camera.position.copy(HOME_TARGET).add(new THREE.Vector3().setFromSpherical(new THREE.Spherical(INTRO_FROM.radius, INTRO_FROM.polar, INTRO_FROM.azimuth)));
     camera.lookAt(HOME_TARGET);
   }, [camera]);
 
@@ -278,7 +362,15 @@ function CameraRig({
     if (phase === "intro") {
       if (introStart.current === null) introStart.current = clock.elapsedTime;
       const t = Math.min(1, (clock.elapsedTime - introStart.current) / INTRO_SECONDS);
-      camera.position.lerpVectors(INTRO_START, homePosition, easeInOutCubic(t));
+      const e = easeOutQuart(t);
+      const lerp = THREE.MathUtils.lerp;
+      const sph = new THREE.Spherical(
+        lerp(INTRO_FROM.radius, homeDistance, e),
+        lerp(INTRO_FROM.polar, HOME_POLAR, e),
+        lerp(INTRO_FROM.azimuth, HOME_AZIMUTH, e),
+      );
+      camera.position.copy(HOME_TARGET).add(new THREE.Vector3().setFromSpherical(sph));
+      camera.lookAt(HOME_TARGET);
       controls.target.copy(HOME_TARGET);
       if (t >= 1) {
         placedHome.current = true;
@@ -338,6 +430,7 @@ function World({
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
   const viewport = useThree((s) => s.size);
   const homeDistance = homeDistanceFor(viewport.width / viewport.height);
+  const exploreStart = useRef<number | null>(null);
   const [interacted, setInteracted] = useState(false); // 한 번이라도 손댔으면 자동 회전을 멈춘다
   const frame = useMemo(() => makeFrame(terrain.meta.bounds), [terrain]);
 
@@ -363,7 +456,13 @@ function World({
   const reported = useRef(false);
   const projected = useMemo(() => new THREE.Vector3(), []);
   const inCameraSpace = useMemo(() => new THREE.Vector3(), []);
-  useFrame(({ camera, size }) => {
+  useFrame(({ camera, size, clock }) => {
+    // 도착한 뒤 자동 회전 속도를 0 에서 서서히 올린다. (진입 연출의 끝과 자연스럽게 이어진다)
+    if (phase === "explore" && controlsRef.current) {
+      if (exploreStart.current === null) exploreStart.current = clock.elapsedTime;
+      const k = smoothstep(Math.min(1, (clock.elapsedTime - exploreStart.current) / ROTATE_RAMP_SECONDS));
+      controlsRef.current.autoRotateSpeed = AUTO_ROTATE_SPEED * k;
+    }
     // 카메라가 멀리 있으면 이름표를 번호만으로 줄여 서로 겹치지 않게 한다.
     const focusPoint = controlsRef.current?.target ?? HOME_TARGET;
     const zoomedOut = camera.position.distanceTo(focusPoint) > 12;
@@ -400,7 +499,7 @@ function World({
   return (
     <>
       {/* 배경색은 화면(CSS)이 칠하고 3D 는 투명하게 그린다. 먼 지형은 같은 색 안개 속으로 사라진다. */}
-      <fog attach="fog" args={[BACKGROUND, 22, 70]} />
+      <fog attach="fog" args={[BACKGROUND, 20, 78]} />
       <hemisphereLight args={["#9db7e0", "#3b3128", 0.85]} />
       <directionalLight position={[-9, 5.5, 8]} intensity={2.9} color="#ffd9b0" />
       <Stars radius={140} depth={40} count={1800} factor={4} saturation={0} fade speed={0.4} />
@@ -430,7 +529,7 @@ function World({
         minPolarAngle={0.12}
         maxPolarAngle={1.4}
         autoRotate={phase === "explore" && !reducedMotion && !selected && !interacted}
-        autoRotateSpeed={0.35}
+        autoRotateSpeed={0}
         onStart={() => setInteracted(true)}
       />
       <CameraRig
