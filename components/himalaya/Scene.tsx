@@ -118,14 +118,18 @@ function Terrain({
     texture.anisotropy = 8;
     texture.needsUpdate = true;
 
-    // 가장자리로 갈수록 투명해져서, 지형이 어둠 속으로 자연스럽게 사라지게 한다.
-    const size = 256;
+    // 지형이 네모난 판처럼 보이지 않도록, 가장자리와 모서리가 타원 모양으로 어둠 속에 녹아들게 한다.
+    // (중심에서 멀어질수록 투명해지고, 모서리는 완전히 사라진다. 14좌는 모두 불투명한 안쪽에 있다.)
+    const size = 512;
     const data = new Uint8Array(size * size * 4);
+    const smooth = (a: number, b: number, v: number) => {
+      const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+      return t * t * (3 - 2 * t);
+    };
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
-        const d = Math.min(x, size - 1 - x, y, size - 1 - y) / size;
-        const t = Math.min(1, Math.max(0, d / 0.16));
-        const a = Math.round(255 * t * t * (3 - 2 * t));
+        const r = Math.hypot((2 * x) / (size - 1) - 1, (2 * y) / (size - 1) - 1);
+        const a = Math.round(255 * (1 - smooth(0.84, 1.24, r)));
         const o = (y * size + x) * 4;
         data[o] = data[o + 1] = data[o + 2] = a;
         data[o + 3] = 255;
