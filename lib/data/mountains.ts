@@ -40,11 +40,11 @@ const PAKISTAN = "파키스탄";
 // 문구는 영어 원문 그대로이며 번역하지 않는다. (PRD: 안전 유의사항은 AI가 만들거나 바꾸지 않는다)
 // 루트 개요의 출처는 각 루트를 다룬 위키백과 영어 문서다. 문서에 적힌 내용만 한국어로 옮겼고,
 // 옮기는 과정의 오류가 있을 수 있어 화면에 "AI가 한국어로 옮김"과 원문 링크를 함께 보여 준다.
-function overview(page: string, text: string) {
+function overview(page: string, text: string, opts: { host?: string; asOf?: string } = {}) {
   return {
     text,
-    source: `https://en.wikipedia.org/wiki/${page}`,
-    asOf: "2026-11-23",
+    source: `https://${opts.host ?? "en.wikipedia.org"}/wiki/${page}`,
+    asOf: opts.asOf ?? "2026-11-23",
   };
 }
 
@@ -95,7 +95,7 @@ const annapurnaCircuit: Route = {
 };
 
 // 히말라야·카라코람 8,000m 14좌.
-// 루트 정보는 출처를 확인한 뒤 routes 에 추가한다. 지금은 모든 산의 루트가 비어 있다.
+// 루트 정보는 출처를 확인한 뒤 routes 에 추가한다. 출처가 확실하지 않은 산은 routes 를 비워 둔다.
 export const mountains: Mountain[] = [
   { slug: "everest", nameKo: "에베레스트", nameEn: "Everest", routes: [{
       id: "everest-base-camp-trek",
@@ -154,10 +154,32 @@ export const mountains: Mountain[] = [
   { slug: "lhotse", nameKo: "로체", nameEn: "Lhotse", routes: [],
     elevationM: 8516, lat: 27.9617, lon: 86.9333, countries: [NEPAL, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Lhotse", "로체는 티베트어로 ‘남쪽 봉우리(South Peak)’라는 뜻으로, 에베레스트와의 가까운 관계를 이름에 담고 있습니다. 세계에서 네 번째로 높고, 정상이 중국 티베트 자치구와 네팔 쿰부 지역의 경계에 있습니다.\n북쪽의 에베레스트, 서쪽의 눕체와 함께 에베레스트 산군의 거대한 말굽 모양 능선을 이룹니다. 남벽과 북동벽은 높이 솟아 있지만, 에베레스트와의 사이에 있는 사우스콜이 매우 높아서 8,000m급 봉우리 가운데 상대적 높이가 가장 작습니다.\n서쪽 사면은 서쪽 쿰(Western Cwm)에 자리해 두 산의 표준 등반 루트에서 중요한 역할을 합니다. 능선에는 로체 메인, 로체 미들, 로체 센트럴 II, 로체 샤르의 네 봉우리가 있습니다.") },
-  { slug: "makalu", nameKo: "마칼루", nameEn: "Makalu", routes: [],
+  { slug: "makalu", nameKo: "마칼루", nameEn: "Makalu", routes: [{
+      id: "makalu-barun-valley",
+      name: "바룬 계곡 – 마칼루 베이스캠프 트레킹 (네팔)",
+      nameEn: "Barun Valley – Makalu Base Camp Trek (Nepal)",
+      // 문서에 트레킹 전체 거리·일수·고도별 지점이 없어 비워 둔다. (계곡 길이 46 km 는 트레킹 거리가 아니다)
+      distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Barun_Valley", "바룬 계곡은 네팔 상쿠와사바 지구의 마칼루 산기슭에 있는 히말라야 계곡으로, 전체가 마칼루바룬 국립공원 안에 있습니다. 이 계곡은 마칼루 베이스캠프로 가는 트레킹 길에 놓여 있습니다.\n문서는 이 트레킹을 ‘다소 어렵지만 매우 보람 있는’ 코스로 소개합니다. 계곡 전체에는 사람이 살지 않고 대부분 초원(카르카)으로 덮여 있으며, 여름에는 임시 캠프가 만들어집니다. 문서에 이름이 나열된 캠프 지역은 뭄북, 양글레 카르카, 응에, 리푹, 타다소, 야크 카르카, 랑말레, 셰르숀입니다(순서와 고도는 적혀 있지 않습니다).\n요즘은 타시가온 위쪽부터 베이스캠프까지 롯지가 있어 캠핑 장비와 식량을 더 가져갈 필요가 없다고 합니다. 다만 롯지에 담요가 충분하지 않을 수 있어 침낭을 챙기는 것이 좋다고 하며, 길을 찾기 어려운 곳이 있어 현지 가이드를 강력히 권한다고 적혀 있습니다.", { asOf: "2026-11-24" }),
+      source: "위키백과 Barun Valley https://en.wikipedia.org/wiki/Barun_Valley (확인일 2026-11-24, 문서 마지막 수정 2026-07-02)",
+      asOf: "2026-11-24",
+    }], 
     elevationM: 8485, lat: 27.88972222, lon: 87.08888889, countries: [NEPAL, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Makalu", "마칼루는 세계에서 다섯 번째로 높은 산입니다. 에베레스트에서 남동쪽으로 19 km 떨어진 중국–네팔 국경의 마할랑구르 히말라야에 있으며, 네 면의 피라미드 모양으로 홀로 솟은 봉우리입니다.\n북북서쪽 약 3 km에는 캉충체(마칼루 II, 7,678 m)가, 북북동쪽 약 5 km에는 초모 론조(7,804 m)가 있습니다. 동쪽 30 km의 아룬강 계곡에서 7,000 m 넘게 솟아, 지구에서 가장 큰 고도 차이 가운데 하나를 보여 줍니다.") },
-  { slug: "cho-oyu", nameKo: "초오유", nameEn: "Cho Oyu", routes: [],
+  { slug: "cho-oyu", nameKo: "초오유", nameEn: "Cho Oyu", routes: [{
+      id: "nangpa-la-trek",
+      name: "낭파 라 고개 트레킹 (초오유 서쪽, 네팔–티베트 국경)",
+      nameEn: "Nangpa La Pass Trek (west of Cho Oyu, Nepal–Tibet border)",
+      // 문서에 거리·일수·숙소·지점별 고도가 없어 비워 둔다. 고개 높이는 문서 안에서 5,806 m 와 5,716 m 로 서로 달라 적지 않는다.
+      distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      overview: overview("Nangpa_La", "낭파 라는 히말라야를 가로지르는 높은 고개로, 네팔과 티베트 자치구 국경에 걸쳐 있으며 초오유에서 서쪽으로 몇 킬로미터, 에베레스트에서 북서쪽으로 약 30 km 떨어진 곳에 있다고 소개됩니다.\n이 고개를 넘는 발길은 티베트인과 쿰부의 셰르파를 잇는 전통적인 교역·순례 길이며, 옛 이름은 쿰부 라입니다.\n문서에는 ‘낭파 라 트레킹’이 에베레스트 지역에서 잘 알려지지 않은 길이지만 가장 경치가 좋은 길 중 하나라고 적혀 있습니다. 이 길은 셰르파 마을과 외진 히말라야 풍경을 지나 낭파 라에 이른다고 합니다. 이 고개에서는 2006년 국경 경비대가 티베트 난민들에게 총격을 가한 사건이 있었다고도 기록되어 있습니다.\n문서에는 거리, 일정, 숙소, 허가에 관한 내용이 없고, 고개의 해발도 5,806 m와 5,716 m로 서로 다르게 적혀 있습니다.", { asOf: "2026-11-24" }),
+      source: "위키백과 Nangpa La https://en.wikipedia.org/wiki/Nangpa_La (확인일 2026-11-24, 문서 마지막 수정 2026-11-06)",
+      asOf: "2026-11-24",
+    }], 
     elevationM: 8188, lat: 28.09416667, lon: 86.66083333, countries: [NEPAL, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Cho_Oyu", "초오유는 티베트어로 ‘터키석 여신(Turquoise Goddess)’이라는 뜻입니다. 세계에서 여섯 번째로 높고, 에베레스트에서 서쪽으로 20 km 떨어진 중국–네팔 국경에 있습니다.\n서쪽 몇 km에는 티베트 사람들과 쿰부의 셰르파들이 오가는 주요 교역로인 낭파 라(5,716 m) 고개가 있습니다. 이 고개와 가깝고 표준 북서릉 루트의 경사가 대체로 완만해서, 8,000m 봉우리 가운데 가장 오르기 쉬운 산으로 여겨지며 전문 가이드와 함께하는 원정대가 즐겨 찾습니다.") },
   { slug: "dhaulagiri", nameKo: "다울라기리", nameEn: "Dhaulagiri", routes: [],
@@ -220,7 +242,32 @@ export const mountains: Mountain[] = [
   { slug: "gasherbrum-1", nameKo: "가셔브룸 1봉", nameEn: "Gasherbrum I", routes: [],
     elevationM: 8080, lat: 35.72444444, lon: 76.69638889, countries: [PAKISTAN, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Gasherbrum_I", "가셔브룸 I은 ‘히든 피크(Hidden Peak)’라고도 하며, 처음 측량될 때는 K5라고 불렸습니다. 카라코람의 가셔브룸 산군에 있고, 파키스탄 길기트발티스탄과 중국 신장 사이에 걸쳐 있습니다.\n‘가셔브룸’은 흔히 ‘빛나는 벽(Shining Wall)’이라는 뜻이라고 하지만, 실제로는 발티어로 ‘아름답다’는 뜻의 ‘rgasha’와 ‘산’을 뜻하는 ‘brum’에서 온 말이라 ‘아름다운 산’이라는 뜻입니다.\nK5라는 이름은 1856년 T.G. 몽고메리가 인도 대삼각측량 중 200 km 넘게 떨어진 곳에서 카라코람 봉우리들을 처음 발견하며 붙였습니다. 1892년 윌리엄 마틴 콘웨이는 앞쪽 봉우리들에 가려 발토로 빙하를 따라 걷는 동안 대부분 보이지 않는 외진 위치 때문에 ‘히든 피크’라는 이름을 붙였습니다.\n1958년 7월 5일 니컬러스 클린치가 이끈 미국 8인 원정대의 피트 쇠닝과 앤디 카우프먼이 처음 올랐습니다.") },
-  { slug: "broad-peak", nameKo: "브로드피크", nameEn: "Broad Peak", routes: [],
+  { slug: "broad-peak", nameKo: "브로드피크", nameEn: "Broad Peak", routes: [{
+      id: "broad-peak-base-camp",
+      name: "브로드피크 베이스캠프 구간 (K2 베이스캠프 트레킹 경로 중, 파키스탄)",
+      nameEn: "Broad Peak Base Camp section (on the K2 base camp trek, Pakistan)",
+      // 문서의 "왕복 약 180 km, 10~16일"은 K2 베이스캠프까지 전체 트레킹의 값이라 이 구간의 거리·일수로 쓰지 않고 비워 둔다.
+      distanceKm: null, durationDays: null, lodgingCount: null, amenities: null,
+      difficulty: null, difficultySource: null, difficultyAsOf: null,
+      safetyNotes: HRA_SAFETY_NOTES,
+      // 위키보야지 K2 base camp trek 본문에 고도가 적힌 지점만, 본문 순서대로.
+      elevationProfile: {
+        points: [
+          { name: "아스콜레", nameEn: "Askole", elevationM: 3050 },
+          { name: "졸라", nameEn: "Jhola", elevationM: 3200 },
+          { name: "파이주", nameEn: "Paiju", elevationM: 3450 },
+          { name: "우르두카스", nameEn: "Urdukas", elevationM: 3990 },
+          { name: "고로 2", nameEn: "Goro 2", elevationM: 4380 },
+          { name: "콩코르디아", nameEn: "Concordia", elevationM: 4620 },
+          { name: "브로드피크 베이스캠프", nameEn: "Broad Peak Base Camp", elevationM: 4800 },
+        ],
+        source: "위키보야지 K2 base camp trek https://en.wikivoyage.org/wiki/K2_base_camp_trek (확인일 2026-11-24, CC BY-SA 4.0)",
+        asOf: "2026-11-24",
+      },
+      overview: overview("K2_base_camp_trek", "이 구간은 위키보야지 ‘K2 base camp trek’ 문서에 나오는 길의 일부입니다. 문서는 이 트레킹이 파키스탄 스카르두에서 시작하는 여러 날의 도보 여행이며, K2 베이스캠프까지 왕복 약 180 km에 10~16일이 걸린다고 소개합니다(이 값은 이 구간만이 아니라 전체 트레킹의 값입니다).\n길은 마지막 상설 마을인 아스콜레(3,050 m)에서 시작해 졸라(3,200 m), 파이주(3,450 m), 우르두카스(3,990 m), 고로 2(4,380 m)를 거쳐, 발토로 빙하와 고드윈오스틴 빙하가 만나는 콩코르디아(4,620 m)에 이릅니다. 콩코르디아는 K2, 브로드피크, 가셔브룸 I·II 등 8,000 m급 봉우리 네 개에 둘러싸인 곳이라고 합니다. 여기서 북쪽으로 고드윈오스틴 빙하를 따라 올라가다 보면 중간쯤에 브로드피크 베이스캠프(4,800 m)가 있고, 문서는 이곳이 브로드피크 서쪽 사면 바로 아래에 있으며 시설이 거의 없다고 적고 있습니다.\n숙박은 스카르두를 떠난 뒤에는 캠핑이 주된 방법이거나 유일한 방법이고, 아스콜레와 후셰에만 아주 기본적인 숙소가 있다고 합니다. 문서에 따르면 외국인은 정부가 승인한 가이드와 함께해야 하며 혼자서는 갈 수 없고, 특별 트레킹 비자가 필요합니다.", { host: "en.wikivoyage.org", asOf: "2026-11-24" }),
+      source: "위키보야지 K2 base camp trek https://en.wikivoyage.org/wiki/K2_base_camp_trek (확인일 2026-11-24, 문서 마지막 수정 2026-11-13, CC BY-SA 4.0). 브로드피크 베이스캠프 지점은 이 문서의 한 항목",
+      asOf: "2026-11-24",
+    }], 
     elevationM: 8051, lat: 35.81361111, lon: 76.56527778, countries: [PAKISTAN, CHINA], source: SOURCE, asOf: AS_OF,
     story: story("Broad_Peak", "브로드피크는 세계에서 열두 번째로 높은 산으로, 카라코람에 있으며 파키스탄 길기트발티스탄과 중국 신장에 걸쳐 있습니다.\n1957년 6월 오스트리아 원정대의 프리츠 빈터슈텔러, 마르쿠스 슈무크, 쿠르트 디엠베르거, 헤르만 불이 처음 올랐습니다.") },
   { slug: "gasherbrum-2", nameKo: "가셔브룸 2봉", nameEn: "Gasherbrum II", routes: [],
