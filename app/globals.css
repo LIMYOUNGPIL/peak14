@@ -198,6 +198,116 @@ body {
 }
 @media (max-width: 760px) { .hx-credit { left: 18px; } }
 
+/* 화면 방식 선택 탭 (3D / 목록 / 피크 한 곳씩 보기) */
+.hx-tabs {
+  display: inline-flex; padding: 3px; border-radius: 999px; gap: 2px;
+  border: 1px solid var(--glass-line); background: var(--glass); backdrop-filter: blur(12px); color: #fff;
+}
+.hx-tab {
+  padding: 8px 14px; border-radius: 999px; font-size: 13px; line-height: 1; white-space: nowrap;
+  background: transparent; color: inherit; border: 0; cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.hx-tab:hover:not(:disabled) { background: rgba(255, 255, 255, 0.18); }
+.hx-tab.is-on { background: #fff; color: #000; font-weight: 600; }
+.hx-tab:disabled { opacity: 0.4; cursor: not-allowed; }
+.hx-list-view .hx-tabs { background: transparent; border-color: rgba(127, 127, 127, 0.4); color: var(--foreground); }
+.hx-list-view .hx-tab:hover:not(:disabled) { background: rgba(127, 127, 127, 0.18); }
+.hx-list-view .hx-tab.is-on { background: var(--foreground); color: var(--background); }
+.hx-topright-fixed { animation: none; }
+
+/* ========================================================================
+   피크 한 곳씩 보기 (components/himalaya/Spotlight)
+   ======================================================================== */
+.sp-root { position: absolute; inset: 0; z-index: 1; overflow: hidden; background: #060b14; color: #fff; touch-action: pan-y; }
+.sp-photos { position: absolute; inset: 0; }
+.sp-photo { object-fit: cover; opacity: 0; transition: opacity 0.7s ease; }
+.sp-photo.is-active { opacity: 1; }
+/* 글자가 밝은 눈 위에서도 읽히도록: 위쪽·아래쪽을 어둡게, 제목 뒤는 부드럽게 눌러 준다 */
+.sp-scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 38% at 50% 24%, rgba(4, 9, 18, 0.5), transparent 75%),
+    linear-gradient(to bottom, rgba(4, 9, 18, 0.72) 0%, rgba(4, 9, 18, 0.34) 36%, rgba(4, 9, 18, 0.12) 56%, rgba(4, 9, 18, 0.86) 100%);
+}
+.sp-hero {
+  position: absolute; z-index: 2; left: 0; right: 0; top: clamp(72px, 11vh, 120px);
+  padding: 0 24px; text-align: center; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.sp-eyebrow { margin: 0; font-size: clamp(13px, 1.5vw, 18px); font-weight: 500; letter-spacing: 0.3em; text-indent: 0.3em; }
+.sp-title {
+  margin: 14px 0 0; font-family: var(--serif); font-weight: 400; line-height: 0.98; letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+}
+.sp-sub { margin: 10px 0 0; font-size: clamp(15px, 1.5vw, 19px); opacity: 0.92; }
+.sp-rule { display: block; width: 84px; height: 4px; margin: 18px auto 0; border-radius: 2px; background: #79dce8; }
+.sp-facts {
+  display: inline-flex; gap: clamp(18px, 3vw, 38px); margin: 20px 0 0; padding: 12px 24px; border-radius: 16px;
+  background: rgba(4, 9, 18, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 15px; text-shadow: none;
+}
+.sp-facts dt { margin-bottom: 3px; font-size: 12px; opacity: 0.7; }
+.sp-facts dd { margin: 0; font-weight: 600; }
+.sp-source { display: inline-block; max-width: 92%; margin: 10px 0 0; padding: 4px 12px; border-radius: 999px; font-size: 11px; line-height: 1.4; color: rgba(255, 255, 255, 0.88); background: rgba(4, 9, 18, 0.55); text-shadow: none; }
+
+.sp-bottom { position: absolute; z-index: 3; left: 0; right: 0; bottom: 74px; height: 120px; }
+.sp-cta {
+  position: absolute; left: 50%; top: 14px; transform: translateX(-50%); display: inline-flex; align-items: center; justify-content: center;
+  min-width: 232px; height: 58px; padding: 0 24px; border-radius: 29px; white-space: nowrap;
+  font-size: 16px; font-weight: 700; color: #071227; text-decoration: none;
+  background: linear-gradient(180deg, #fff, #d9ecfe 72%, #fff);
+  box-shadow: 0 10px 18px -8px rgba(255, 255, 255, 0.5), 0 0 26px rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s;
+}
+.sp-cta:hover { transform: translateX(-50%) scale(1.04); }
+.sp-card {
+  position: absolute; bottom: 0; width: 216px; padding: 0; overflow: hidden; text-align: left; color: #fff; cursor: pointer;
+  border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(6, 11, 20, 0.62); backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s;
+}
+.sp-card:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.7); }
+.sp-card-l { left: clamp(18px, 3vw, 44px); }
+.sp-card-r { right: clamp(18px, 3vw, 44px); }
+.sp-thumb { position: relative; display: block; height: 82px; background: #0b1422; }
+.sp-thumb-none { display: flex; align-items: center; justify-content: center; font-size: 12px; opacity: 0.6; }
+.sp-card-cap { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 9px; font-size: 14px; font-weight: 600; }
+.sp-card-cap small { display: block; margin-bottom: 1px; font-size: 11px; font-weight: 400; letter-spacing: 0.08em; opacity: 0.65; }
+.sp-card-cap em { font-style: normal; font-size: 18px; opacity: 0.85; }
+
+.sp-dots { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: 50px; display: flex; gap: 6px; }
+.sp-dot { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: rgba(255, 255, 255, 0.38); cursor: pointer; transition: width 0.25s, background 0.25s; position: relative; }
+.sp-dot::after { content: ""; position: absolute; inset: -10px -3px; } /* 누르기 쉽게 눈에 안 보이는 터치 영역 */
+.sp-dot.is-on { width: 20px; background: #fff; }
+.sp-credit {
+  width: fit-content; max-width: calc(100% - 36px); padding: 4px 10px; border-radius: 10px; background: rgba(4, 9, 18, 0.5);
+  position: absolute; z-index: 3; left: clamp(18px, 3vw, 44px); right: clamp(18px, 3vw, 44px); bottom: 12px; margin: 0;
+  font-size: 11px; line-height: 1.4; color: rgba(255, 255, 255, 0.72); text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+.sp-credit a { color: rgba(255, 255, 255, 0.92); text-decoration: underline; }
+
+@media (max-width: 760px) {
+  .hx-tabs { padding: 2px; }
+  .hx-tab { padding: 9px 11px; font-size: 12px; }
+  .hx-topright { right: 12px; top: 12px; }
+  .sp-hero { top: 64px; padding: 0 16px; }
+  .sp-facts { gap: 14px; padding: 10px 14px; font-size: 13px; }
+  .sp-bottom { bottom: 86px; height: 182px; }
+  .sp-cta { top: 0; min-width: 216px; height: 54px; }
+  .sp-card { width: calc(50% - 20px); bottom: 0; }
+  .sp-card-l { left: 12px; }
+  .sp-card-r { right: 12px; }
+  .sp-thumb { height: 56px; }
+  .sp-card-cap { padding: 6px 10px 7px; font-size: 13px; }
+  .sp-dots { bottom: 62px; }
+}
+@media (max-height: 640px) and (min-width: 761px) {
+  .sp-hero { top: 64px; }
+  .sp-facts { margin-top: 12px; padding: 8px 18px; }
+  .sp-title { font-size: clamp(40px, 8vw, 96px) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-photo, .sp-card, .sp-cta { transition-duration: 0.01ms !important; }
+}
+
 /* 나타나는 연출 */
 .hx-story.hx-rise { animation: hx-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
 .hx-rise > * { animation: hx-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }

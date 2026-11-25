@@ -24,6 +24,8 @@ import CustomCursor from "./CustomCursor";
 import PeakInfo from "./PeakInfo";
 import PeakList from "./PeakList";
 import Preloader from "./Preloader";
+import Spotlight from "./Spotlight";
+import ViewTabs, { type ViewMode } from "./ViewTabs";
 import { EXAGGERATION } from "./geo";
 import { loadTerrain, type TerrainData } from "./terrain";
 import type { PeakPoint, Phase } from "./Scene";
@@ -79,7 +81,7 @@ export default function Experience({ mountains, locale }: { mountains: PublicMou
   const containerRef = useRef<HTMLDivElement>(null);
   const labelRefs = useRef<(HTMLElement | null)[]>([]);
 
-  const [view, setView] = useState<"scene" | "list">("scene");
+  const [view, setView] = useState<ViewMode>("scene");
   const [loadError, setLoadError] = useState(false);
   const [terrain, setTerrain] = useState<TerrainData | null>(null);
   const [SceneComp, setSceneComp] = useState<SceneComponent | null>(null);
@@ -217,9 +219,7 @@ export default function Experience({ mountains, locale }: { mountains: PublicMou
         <>
           <PeakList mountains={mountains} selected={selected} onSelect={onSelect} locale={locale} />
           <div className="hx-topright">
-            <button type="button" className="hx-pill" onClick={() => setView("list")}>
-              {t("explore.listView")}
-            </button>
+            <ViewTabs view={view} onChange={setView} locale={locale} />
           </div>
           <PeakInfo mountain={selectedMountain} onClose={() => setSelected(null)} locale={locale} />
           {terrain && (
@@ -233,8 +233,18 @@ export default function Experience({ mountains, locale }: { mountains: PublicMou
         </>
       )}
 
+      {/* 피크 한 곳씩 보기: 산 사진이 화면을 채운다 */}
+      {view === "spotlight" && (
+        <>
+          <Spotlight mountains={mountains} locale={locale} />
+          <div className="hx-topright hx-topright-fixed">
+            <ViewTabs view={view} onChange={setView} locale={locale} sceneDisabled={!!failure} />
+          </div>
+        </>
+      )}
+
       {/* 목록 화면: 3D를 쓸 수 없거나 사용자가 고른 경우 */}
-      {!showScene && (
+      {!showScene && view !== "spotlight" && (
         <div className="hx-list-view">
           <div className="mx-auto w-full max-w-5xl px-6 py-10">
             <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
@@ -247,11 +257,7 @@ export default function Experience({ mountains, locale }: { mountains: PublicMou
                   </p>
                 )}
               </div>
-              {!failure && (
-                <button type="button" className="hx-pill" onClick={() => setView("scene")}>
-                  {t("explore.sceneView")}
-                </button>
-              )}
+              <ViewTabs view={view === "scene" ? "list" : view} onChange={setView} locale={locale} sceneDisabled={!!failure} />
             </div>
             <MountainGrid mountains={mountains} locale={locale} />
           </div>

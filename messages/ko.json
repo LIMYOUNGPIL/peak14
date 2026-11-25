@@ -62,7 +62,20 @@
     "storyNote": "위키백과 영어 서두를 AI가 한국어로 옮긴 글입니다. 옮기는 과정에 오류가 있을 수 있으니 원문을 함께 확인하세요.",
     "storySource": "원문 보기",
     "loadingLabel": "불러오는 중",
-    "listLabel": "14좌 목록"
+    "listLabel": "14좌 목록",
+    "viewLabel": "화면 방식",
+    "viewScene": "3D",
+    "viewList": "목록",
+    "viewSpotlight": "피크 한 곳씩 보기",
+    "spotlightEyebrow": "피크 {n} / {total}",
+    "prevPeak": "이전 피크",
+    "nextPeak": "다음 피크",
+    "goPeak": "{name} 보기",
+    "photoBy": "사진",
+    "photoEdited": "색감·크기를 가공함",
+    "photoSource": "원문",
+    "photoMissing": "사진 없음",
+    "spotlightLabel": "피크 한 곳씩 보기"
   },
   "home": {
     "noRoutes": "등록된 루트 없음",

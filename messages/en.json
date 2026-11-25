@@ -62,7 +62,20 @@
     "storyNote": "Translated into Korean by AI from the English Wikipedia introduction. Errors may creep in during translation, so please check the original too.",
     "storySource": "View original",
     "loadingLabel": "Loading",
-    "listLabel": "List of the 14 peaks"
+    "listLabel": "List of the 14 peaks",
+    "viewLabel": "View mode",
+    "viewScene": "3D",
+    "viewList": "List",
+    "viewSpotlight": "Spotlight",
+    "spotlightEyebrow": "PEAK {n} / {total}",
+    "prevPeak": "Previous peak",
+    "nextPeak": "Next peak",
+    "goPeak": "Show {name}",
+    "photoBy": "Photo",
+    "photoEdited": "color-graded and cropped",
+    "photoSource": "source",
+    "photoMissing": "No photo",
+    "spotlightLabel": "Spotlight: one peak at a time"
   },
   "home": {
     "noRoutes": "No routes registered",

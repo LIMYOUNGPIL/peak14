@@ -72,6 +72,18 @@ export type Mountain = {
 
 // 로그인 전에도 볼 수 있는 산 정보 (PRD 4번: 루트 목록까지 공개, 세부 정보는 로그인 후)
 // 루트의 세부 내용(안전 유의사항, 거리 등)은 일부러 담지 않는다. 화면(브라우저)으로 보내는 값이기 때문이다.
+// 산 대표 사진: 위키미디어 커먼즈의 자유 이용 사진을 색감·크기만 가공해 쓴다. 글쓴이·라이선스·원문 링크를 함께 보여 준다.
+export type PeakPhoto = {
+  file: string; // /peaks/{file}.webp, /peaks/{file}-thumb.webp
+  alt: string;
+  author: string;
+  license: string; // 예: CC BY-SA 4.0
+  licenseUrl: string;
+  sourceUrl: string; // 커먼즈 파일 페이지
+  year: number | null;
+  focalX: number; // 0~1, 화면에서 정상이 놓일 가로 위치
+};
+
 export type PublicMountain = Pick<
   Mountain,
   | "slug"
@@ -86,6 +98,7 @@ export type PublicMountain = Pick<
   | "story"
 > & {
   routeCount: number;
+  photo: PeakPhoto | null;
 };
 
 // 로그인 전 루트 목록에 보여 줄 수 있는 루트 정보: 이름과 안전 유의사항 "건수"만

@@ -6,6 +6,7 @@
 import "server-only";
 import type { Mountain, PublicMountain, PublicRoute, Route } from "@/types/mountain";
 import { mountains } from "./mountains";
+import { PEAK_PHOTOS } from "./peak-photos";
 
 export function toPublicMountain(m: Mountain): PublicMountain {
   return {
@@ -20,6 +21,7 @@ export function toPublicMountain(m: Mountain): PublicMountain {
     asOf: m.asOf,
     story: m.story,
     routeCount: m.routes.length,
+    photo: PEAK_PHOTOS[m.slug] ?? null,
   };
 }
 
